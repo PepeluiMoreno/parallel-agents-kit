@@ -79,7 +79,40 @@ que solo se sube a GitHub cuando **tú** lo pides.
 
 ---
 
-## 4 · Los comandos
+## 4 · Instalación en un proyecto nuevo
+
+Un chat de Claude Code solo reconoce los comandos `/...` que estén en la carpeta
+`.claude/commands/` **del repositorio donde está abierto el chat**. Instalar el kit es, por tanto,
+copiarlo a ese repo. De cero:
+
+```
+# 1. El proyecto debe ser un repo git (el aislamiento son git worktrees)
+cd /ruta/a/mi-proyecto
+git init                         # solo si todavía no es un repo
+
+# 2. Instalar el kit en ese repo
+/ruta/al/parallel-agents-kit/install.sh /ruta/a/mi-proyecto
+#    (o, ya dentro del repo:  /ruta/al/parallel-agents-kit/install.sh . )
+```
+
+`install.sh` copia los comandos a `.claude/commands/` (donde Claude los descubre) y el resto del
+kit —schema y plantillas— a `.claude/kit/`. Si el destino no es un repo git, avisa y se detiene.
+
+```
+# 3. Abrir un chat en ESE repo y refrescar el descubrimiento de comandos
+#    - en VSCode: abre la carpeta del proyecto y empieza un chat ahí;
+#    - si el chat ya estaba abierto, recárgalo (los comandos se leen al iniciar la sesión).
+```
+
+> **Las dos causas de un "Unknown command":** (1) los comandos no están en el `.claude/commands/`
+> del repo abierto —falta correr `install.sh`—, o (2) sí están pero el chat se abrió antes de
+> instalarlos: **recarga la sesión** y aparecerán.
+
+Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/analizar-proyecto`.
+
+---
+
+## 5 · Los comandos
 
 > Un *comando* se escribe empezando por `/`. Cada uno lo usa un rol distinto.
 
@@ -96,7 +129,7 @@ que solo se sube a GitHub cuando **tú** lo pides.
 
 ---
 
-## 5 · La secuencia de uso
+## 6 · La secuencia de uso
 
 **Puesta en marcha (una sola vez por proyecto):**
 
@@ -128,7 +161,7 @@ que solo se sube a GitHub cuando **tú** lo pides.
 
 ---
 
-## 6 · Loops: cómo encajan (y por qué con freno)
+## 7 · Loops: cómo encajan (y por qué con freno)
 
 Hay **dos formas de ir en paralelo** y no compiten, se suman:
 
@@ -151,7 +184,7 @@ Es el equilibrio entre "que trabaje solo" y "que no rompa nada sin que yo mire".
 
 ---
 
-## 7 · Las tres reglas que nunca se rompen
+## 8 · Las tres reglas que nunca se rompen
 
 1. **Un fichero, un dueño.** Cada unidad edita lo suyo; el jefe, las zonas calientes. Nadie toca lo
    que no posee. Si una tarea cruza fronteras, se **deriva** a la bandeja de la unidad dueña (no se
