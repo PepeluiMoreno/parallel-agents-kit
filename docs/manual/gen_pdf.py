@@ -5,7 +5,7 @@ from weasyprint import HTML
 
 HERE = pathlib.Path(__file__).parent
 SVG = (HERE / "diagrama.svg.html").read_text(encoding="utf-8")
-OUT = str(HERE / "MANUAL_MULTIAGENTE.pdf")  # genera junto a este script
+OUT = str(HERE / "MANUAL_EQUIPO_DESARROLLO_VIRTUAL.pdf")  # genera junto a este script
 
 # ---------- contenido en markdown (cuerpo) ----------
 # El escenario gráfico se inyecta como SVG inline donde está el marcador.
