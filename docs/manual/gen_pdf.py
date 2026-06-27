@@ -59,8 +59,9 @@ Centraliza lo delicado para que nada choque.
 **Buzón.** Un chat que recibe tus quejas/ideas desordenadas, las **clasifica** por unidad y las
 **encola** en una lista de tareas (la *bandeja* de cada unidad). No arregla nada: solo reparte.
 
-**Loop.** Repetir una orden **en bucle**. Sirve para que el equipo **se autoabastezca**: en vez de
-relanzar tú cada vez, un bucle va vaciando las bandejas solo (con un freno de seguridad, ver §6).
+**Loop (modo en bucle).** Hacer que el equipo repita el trabajo **solo**, sin que tú relances cada
+vez: va vaciando las tareas pendientes hasta que no queda ninguna. Útil para dejarlo trabajando
+mientras haces otra cosa. Se explica en el apartado 7.
 
 ---
 
@@ -121,7 +122,7 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 | `/analizar-proyecto` | el arquitecto | Escanea la estructura del proyecto y **propone** cómo repartirlo en unidades. No despliega: espera tu visto bueno. |
 | `/desplegar-tinglado` | el arquitecto | Con tu reparto aprobado, **monta** todo: worktrees, protocolo, bandejas, comandos. |
 | `/orquestar` | el jefe | **Modo 1 ventana.** Lanza un subagente por unidad con tareas y luego integra. |
-| `/orquestar-loop` | el jefe | **Modo desatendido (freno).** Drena las bandejas en bucle, pero **para y pide tu OK** antes de fusionar o migrar. Se usa con `/loop`. |
+| `/orquestar-loop` | el jefe | **Modo en bucle (desatendido).** Va resolviendo las tareas pendientes solo, sin que relances; **te pide permiso** antes de juntar el trabajo o migrar. Se usa con `/loop`. Ver apartado 7. |
 | `/inbox` | un agente de unidad | Lee su bandeja y se pone a trabajar sus tareas (modo "una ventana por unidad"). |
 | `/pedir-cableado` | un agente de unidad | Cuando necesita una zona caliente, **no la toca**: deja la petición al jefe. |
 | `/integrar` | el jefe | Fusiona las ramas listas, aplica los cableados pedidos y las migraciones. |
@@ -148,12 +149,12 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 6.  (cuando quieras subir)  "sube la rama principal a GitHub"
 ```
 
-**Desatendido (cuando quieras que se vacíe solo):**
+**Dejarlo trabajando solo (cuando tienes varias tareas y vas a estar a otra cosa):**
 
 ```
-/loop /orquestar-loop       → drena las bandejas en bucle;
-                              PARA y te pide OK antes de fusionar/migrar;
-                              se apaga solo cuando no queda nada.
+/loop /orquestar-loop       → va resolviendo las tareas pendientes solo;
+                              te pide permiso antes de juntar el trabajo o migrar;
+                              se apaga solo cuando no queda nada. (Ver apartado 7.)
 ```
 
 > **Local vs. GitHub.** Todo el baile de ramas ocurre **en tu ordenador**. En GitHub solo está la
@@ -161,26 +162,42 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 
 ---
 
-## 7 · Loops: cómo encajan (y por qué con freno)
+## 7 · Trabajar desatendido: el modo en bucle
 
-Hay **dos formas de ir en paralelo** y no compiten, se suman:
+### ¿Qué es?
+Normalmente tú disparas el trabajo: escribes `/orquestar` y el equipo hace una ronda. El **modo en
+bucle** es lo mismo pero **repitiéndose solo**: el equipo va mirando las tareas pendientes y las va
+sacando **sin que tú tengas que relanzar nada**, hasta que no queda ninguna. Entonces se apaga.
 
-- **Subagentes** → paralelos **en el espacio**: varias unidades a la vez, *ahora*.
-- **Loop** → repetición **en el tiempo**: lo mismo, *una y otra vez*, hasta vaciar.
+Se activa así:
 
-`/loop /orquestar-loop` combina las dos: en cada vuelta lanza los subagentes (espacio) y repite
-(tiempo). El equipo **se autoabastece**: tú vas soltando quejas al buzón y las bandejas se drenan
-solas.
+```
+/loop /orquestar-loop
+```
 
-**El freno (importante).** Drenar tareas en los worktrees es **seguro y reversible** (cada agente
-commitea en su propia rama). Pero **fusionar, cablear zonas calientes y migrar la base de datos es
-difícil de deshacer**. Por eso el modo *freno*:
+### ¿Para qué sirve?
+Para que el proyecto **avance solo mientras tú haces otra cosa**. En vez de estar pendiente de
+escribir `/orquestar` cada rato, vas soltando peticiones al buzón cuando se te ocurren —por la
+mañana, en una reunión, desde el móvil— y el equipo las va resolviendo por su cuenta. Tú llegas
+luego y te encuentras el trabajo hecho.
 
-- ✅ automatiza lo seguro (que los agentes avancen sus tareas),
-- ✋ **se detiene y te pide OK** antes de cualquier fusión, cableado o migración,
-- 🔌 **se apaga solo** cuando no queda nada que drenar (no late en vano).
+### ¿Cuándo conviene usarlo?
+- ✅ Cuando tienes **muchas tareas acumuladas** en las bandejas y quieres que se vayan resolviendo
+  sin supervisarlas una a una.
+- ✅ Cuando vas a **estar un rato sin atender** (otra tarea, una comida, fin de jornada) y quieres
+  que el equipo siga produciendo.
+- ✅ Cuando las tareas son **independientes y rutinarias**, del tipo "ir despachando el backlog".
 
-Es el equilibrio entre "que trabaje solo" y "que no rompa nada sin que yo mire".
+### ¿Cuándo NO?
+- ❌ Para **una sola tarea** o algo urgente que quieres ver al momento: usa `/orquestar` normal.
+- ❌ Cuando estás haciendo algo **delicado o experimental** que prefieres vigilar paso a paso.
+
+### Tranquilidad: nunca toca lo irreversible sin avisarte
+El bucle automatiza la parte **segura** (que cada agente avance sus tareas en su propia copia de
+trabajo; eso siempre se puede deshacer). Pero la parte **delicada** —juntar el trabajo de todos,
+tocar las piezas compartidas y cambiar la base de datos— es difícil de revertir, así que el bucle
+**se detiene y te pide permiso** antes de hacerla. Y cuando ya no quedan tareas, **se apaga solo**;
+no se queda dando vueltas en vano. En resumen: trabaja solo en lo seguro, te llama para lo serio.
 
 ---
 
@@ -282,7 +299,7 @@ COVER = r"""
     <span class="badge">subagentes en paralelo</span>
     <span class="badge">integrador &middot; buzón</span>
     <span class="badge">modo 1 ventana</span>
-    <span class="badge">loop con freno</span>
+    <span class="badge">modo en bucle</span>
   </div>
   <div class="foot">Proyecto SIGA &middot; generado con WeasyPrint</div>
 </div>
