@@ -213,21 +213,21 @@ body {
   font-size: 10.3pt; line-height: 1.5; color: #1e293b; margin: 0;
 }
 
-/* ---- portada ---- */
+/* ---- portada (sin fondo de color) ---- */
 .cover {
   page-break-after: always; height: 247mm; position: relative;
-  background: linear-gradient(150deg, #4f46e5 0%, #6366f1 45%, #0ea5e9 100%);
-  color: #fff; border-radius: 0; padding: 30mm 22mm;
+  background: #fff; color: #1e293b; padding: 30mm 4mm;
+  border-top: 5px solid #4f46e5;
 }
-.cover .kicker { font-size: 11pt; letter-spacing: 3px; text-transform: uppercase; opacity: .85; }
-.cover h1 { font-size: 33pt; line-height: 1.08; margin: 14mm 0 6mm 0; font-weight: 800; }
-.cover .sub { font-size: 13.5pt; opacity: .95; max-width: 130mm; font-weight: 400; }
-.cover .badges { position: absolute; bottom: 30mm; left: 22mm; right: 22mm; }
+.cover .kicker { font-size: 11pt; letter-spacing: 3px; text-transform: uppercase; color: #4f46e5; font-weight: 600; }
+.cover h1 { font-size: 34pt; line-height: 1.08; margin: 14mm 0 6mm 0; font-weight: 800; color: #0f172a; }
+.cover .sub { font-size: 13.5pt; color: #475569; max-width: 130mm; font-weight: 400; }
+.cover .badges { position: absolute; bottom: 30mm; left: 4mm; right: 4mm; }
 .cover .badge {
-  display: inline-block; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35);
+  display: inline-block; background: #eef2ff; border: 1px solid #c7d2fe; color: #4338ca;
   border-radius: 999px; padding: 4px 13px; font-size: 9.5pt; margin: 0 8px 8px 0;
 }
-.cover .foot { position: absolute; bottom: 16mm; left: 22mm; font-size: 9.5pt; opacity: .8; }
+.cover .foot { position: absolute; bottom: 16mm; left: 4mm; font-size: 9.5pt; color: #94a3b8; }
 
 /* ---- cuerpo ---- */
 h2 {
