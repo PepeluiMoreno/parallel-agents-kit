@@ -12,7 +12,7 @@ Eres un agente de **unidad**. Atiende tu bandeja:
 4. Si hay tareas, propón orden (prioridad alta primero) y empieza por la primera:
    - cámbiala a `[EN CURSO]`,
    - resuélvela **solo en ficheros de tu unidad** (ownership en `.claude/PROTOCOLO_MULTIAGENTE.md`),
-   - si necesitas una zona caliente, NO la edites: usa `/pedir-cableado`,
+   - si necesitas una zona caliente, NO la edites: usa `/solicitar-integracion`,
    - al terminar, commitea con `tipo(<UNIDAD>): …`, marca `[HECHO]` y añade
      `**Resuelto:** <hash> · <qué hiciste>`.
 5. Reglas duras: no mergeas, no aplicas migraciones, no arrancas tu propio stack. Eso es del integrador.

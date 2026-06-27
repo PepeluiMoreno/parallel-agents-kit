@@ -7,8 +7,8 @@
 ## 0. Lo primero al arrancar
 1. Averigua quién eres: lee `.claude/AGENTE.local.md`. Te dice tu `ROL`
    (`unidad` | `integrador` | `buzon`) y, si eres de unidad, tu `UNIDAD`.
-2. Unidad → ejecuta `/inbox`.  Integrador → `/integrar` (o `/orquestar` en modo 1-ventana).
-   Buzón → espera notas y procésalas con `/triaje`.
+2. Unidad → ejecuta `/inbox`.  Integrador → `/aplicar-integracion` (o `/coordinar` en modo 1-ventana).
+   Buzón → espera notas y procésalas con `/peticion`.
 
 ## 1. Roles
 | Rol | Dónde vive | Qué hace | Qué NO hace |
@@ -28,7 +28,7 @@ carpetas; el integrador posee las zonas calientes. Nadie edita lo que no posee.
 > Viven en otro repositorio; se trabajan allí con rama+PR normales y quedan FUERA del fan-out de
 > worktrees de este repo. La coordinación con el principal es manual (PR + nota en bandeja).
 
-## 3. Zonas calientes (NINGÚN agente de unidad las edita — se piden con `/pedir-cableado`)
+## 3. Zonas calientes (NINGÚN agente de unidad las edita — se piden con `/solicitar-integracion`)
 {{LISTA_ZONAS_CALIENTES}}
 <!-- una línea por zona caliente -->
 
@@ -36,7 +36,7 @@ carpetas; el integrador posee las zonas calientes. Nadie edita lo que no posee.
 1. `git status` confirma worktree + rama `feature/<unidad>`.
 2. `/inbox` → coge una tarea `[ABIERTO]`.
 3. Desarrolla **solo en tus ficheros** (§2). Commitea `tipo(<unidad>): …`.
-4. ¿Zona caliente? NO la edites: deja tu parte en tu rama y `/pedir-cableado`.
+4. ¿Zona caliente? NO la edites: deja tu parte en tu rama y `/solicitar-integracion`.
 5. Marca `[HECHO]` con el hash.
 6. Avisa al integrador cuando tu rama esté lista.
 
@@ -58,12 +58,12 @@ remoto recibe la base ya integrada y limpia.
   frontend en tu worktree (colisión de puertos/BD).
 
 ## 7. Mecanismos de runtime activos
-- Modo: **{{RUNTIME_MODO}}** (1-ventana = `/orquestar`; n-ventanas = un chat por unidad con `/inbox`).
+- Modo: **{{RUNTIME_MODO}}** (1-ventana = `/coordinar`; n-ventanas = un chat por unidad con `/inbox`).
 - Loop: **{{RUNTIME_LOOP}}** (off / freno = para antes de mergear-migrar / pleno = desatendido).
 - Triaje desde subagentes: **{{RUNTIME_TRIAJE_SUB}}** (si on, un subagente deriva trabajo de otra
   unidad a su bandeja en vez de invadirla).
 
 ## 8. El buzón y las bandejas (`.claude/inbox/`)
-El usuario reporta de forma desordenada al chat buzón; `/triaje` clasifica por unidad y escribe un
+El usuario reporta de forma desordenada al chat buzón; `/peticion` clasifica por unidad y escribe un
 bloque `[ABIERTO]` en `.claude/inbox/<unidad>.md`. Las peticiones de cableado van a
 `.claude/inbox/integrador.md`. Formato en `.claude/inbox/_README.md`.

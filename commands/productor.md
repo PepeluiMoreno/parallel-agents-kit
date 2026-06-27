@@ -42,14 +42,14 @@ rica** (formato en `.claude/inbox/_README.md`), incluyendo:
 - los **criterios de aceptación** que le aplican,
 - la línea de trazabilidad `**Producto:** <id-ficha>` para enlazar con la ficha.
 Cambia la ficha a estado `ENCOLADA` y anota los ids de las tareas creadas. Avisa al usuario de que
-ya puede lanzar el desarrollo (`/orquestar`).
+ya puede lanzar el desarrollo (`/coordinar`).
 
 ## Seguimiento
 Cuando el usuario lo pida (o al volver), revisa el progreso: tareas `[HECHO]` en las bandejas con
 puntero a tus fichas → mueve la ficha a `EN DESARROLLO`/`HECHA`. Para la aceptación de producto,
 ver `/aceptar`.
 
-> El **buzón** (`/triaje`) sigue existiendo para bugs y quejas tácticas sueltas. Tú, el PO, eres
+> El **buzón** (`/peticion`) sigue existiendo para bugs y quejas tácticas sueltas. Tú, el PO, eres
 > para **funcionalidad nueva de producto**: proactivo y estratégico. Sois complementarios.
 
 $ARGUMENTS
