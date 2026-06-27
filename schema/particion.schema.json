@@ -84,8 +84,8 @@
         "properties": {
           "rol": {
             "type": "string",
-            "enum": ["integrador", "buzon"],
-            "description": "integrador: único que toca zonas calientes, mergea y migra. buzon: clasifica notas del usuario y las encola (no toca código)."
+            "enum": ["integrador", "buzon", "product_owner"],
+            "description": "integrador: único que toca zonas calientes, mergea y migra. buzon: clasifica notas del usuario y las encola (no toca código). product_owner: propone funcionalidad, la diseña en diálogo con el usuario y la encola para el equipo (no toca código)."
           },
           "notas": { "type": "string" }
         }

@@ -1,0 +1,30 @@
+# Producto — backlog y dominio
+
+Esta carpeta es la **capa de producto** del tinglado, gestionada por el **Product Owner** (`/producto`,
+`/aceptar`). Es a la funcionalidad lo que `.claude/inbox/` es al desarrollo: aquí se *decide y diseña
+qué* construir; allí se *encola y construye*.
+
+## Ficheros
+| Fichero | Qué es |
+|---|---|
+| `_dominio.md` | Ficha de dominio: contexto del negocio que el PO usa para proponer con criterio. |
+| `<id>-<slug>.md` | Una ficha por funcionalidad, con su ciclo de vida y todo lo acordado. |
+
+## Ciclo de vida de una ficha
+```
+PROPUESTA      el PO la sugiere (aún no aprobada)
+EN DISEÑO      en diálogo contigo: alcance, flujos, UI, reglas, criterios
+APROBADA       diste el OK al diseño
+ENCOLADA       el PO la partió en tareas y las escribió en las bandejas
+EN DESARROLLO  los agentes la están construyendo
+HECHA          aceptada por ti contra los criterios
+```
+
+## Conexión con el desarrollo
+- El PO escribe las tareas en `.claude/inbox/<unidad>.md` (como el buzón), con **especificación rica**
+  y la línea `**Producto:** <id>` para trazar de qué funcionalidad vienen.
+- El equipo construye con `/orquestar`; el PO sigue el progreso y, al terminar, valida con `/aceptar`.
+
+## PO vs. buzón
+- **Buzón** (`/triaje`): reactivo, táctico — bugs y quejas sueltas que tú reportas.
+- **Product Owner** (`/producto`): proactivo, estratégico — funcionalidad nueva, diseñada contigo.

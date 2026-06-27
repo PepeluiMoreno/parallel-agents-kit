@@ -43,6 +43,13 @@ a mano: aquí sale **derivado** del análisis.
   `inbox.md`, `pedir-cableado.md`, `triaje.md`. (Ya deberían estar si se instaló el kit; si no,
   cópialos de `.claude/kit/commands/`.)
 
+## Paso 4.bis — Capa de producto (si hay rol product_owner)
+Si `roles_transversales` incluye `product_owner`:
+- Crea `.claude/producto/` con `_README.md` (desde `templates/producto/_README.md.tmpl`).
+- Asegúrate de que `.claude/commands/` tiene `producto.md` y `aceptar.md`.
+- Deja la ficha de dominio sin rellenar (el PO la crea con el usuario en su primer `/producto`),
+  o crea el esqueleto desde `templates/producto/_dominio.md.tmpl`.
+
 ## Paso 5 — Activar mecanismos opcionales según runtime
 - `runtime.loop != "off"`: asegúrate de que `.claude/commands/orquestar-loop.md` está disponible
   (drena en bucle; en "freno" para antes de mergear/migrar; en "pleno" no pregunta) y documenta el

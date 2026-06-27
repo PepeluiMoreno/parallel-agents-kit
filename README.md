@@ -55,6 +55,22 @@ normal, fuera del fan-out de worktrees).
 | `/pedir-cableado` | unidad | Encola una petición de zona caliente al integrador |
 | `/integrar` | integrador | Mergea ramas, aplica cableados, reconcilia y aplica migraciones |
 | `/triaje` | buzón | Clasifica una nota del usuario y la encola en la bandeja correcta |
+| `/producto` | product owner | Propone funcionalidad, la diseña en diálogo contigo y, con tu OK, la descompone en tareas y las encola |
+| `/aceptar` | product owner | Valida una funcionalidad terminada contra sus criterios de aceptación y te resume para el visto bueno |
+
+## Capa de producto: el Product Owner
+Además de construir, el kit puede **decidir qué construir**. El rol **product owner** (`/producto`)
+es un agente proactivo que:
+1. propone funcionalidad con criterio (a partir de una *ficha de dominio* que apruebas),
+2. la diseña **en diálogo contigo** —alcance, flujos, UI, reglas, criterios de aceptación—,
+   pidiendo tu OK en cada paso,
+3. con tu visto bueno, la **descompone en tareas por unidad** y las **encola** en las bandejas
+   (con especificación rica + trazabilidad),
+4. y al terminar, valida lo entregado contra los criterios (`/aceptar`).
+
+Vive en `.claude/producto/` (backlog de fichas + ficha de dominio), paralelo a `.claude/inbox/`.
+Es a la funcionalidad lo que el buzón es al desarrollo: el **buzón** es reactivo (bugs/quejas), el
+**PO** es proactivo (producto nuevo). No escribe código; reutiliza el equipo de desarrollo existente.
 
 ## Modos de autonomía (`runtime.loop`)
 - **off**: `/orquestar` es un disparo único; tú decides cuándo.

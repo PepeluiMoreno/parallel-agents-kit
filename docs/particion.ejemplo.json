@@ -44,7 +44,8 @@
   ],
   "roles_transversales": [
     { "rol": "integrador", "notas": "árbol principal en master" },
-    { "rol": "buzon" }
+    { "rol": "buzon" },
+    { "rol": "product_owner", "notas": "propone funcionalidad y la encola; usa .claude/producto/" }
   ],
   "runtime": {
     "modo": "ambos",
