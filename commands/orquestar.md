@@ -36,9 +36,10 @@ ventana por cada worktree.
      - PUEDES crear migraciones pero NO aplicarlas. NO mergees. NO arranques tu propio stack.
      - Commitea en tu rama con `tipo(<U>): descripción` + el cierre de commit del repo.
      - Al terminar cada tarea, márcala [HECHO] en .claude/inbox/<U>.md con el hash y una línea.
-     [si runtime.triaje_desde_subagentes==true, añade:]
-     - Si tu tarea requiere tocar OTRA unidad, NO la invadas: deja una nota en la bandeja de esa
-       unidad (.claude/inbox/<otra>.md) describiendo el trabajo, y sigue con lo tuyo.
+     - [TRIAJE DESDE SUBAGENTES, si runtime.triaje_desde_subagentes==true] Si tu tarea requiere
+       tocar OTRA unidad, NO la invadas: deja una nota [ABIERTO] en la bandeja de esa unidad
+       (.claude/inbox/<otra>.md, formato en inbox/_README.md), avísalo en tu resumen, y sigue con
+       lo tuyo. Así el trabajo derivado se encola para su dueño en vez de cruzar fronteras.
 
      TUS TAREAS:
      <pega las entradas [ABIERTO] de su bandeja, o la tarea directa del usuario>

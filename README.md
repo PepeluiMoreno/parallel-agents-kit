@@ -50,11 +50,19 @@ normal, fuera del fan-out de worktrees).
 | `/analizar-proyecto` | arquitecto | Escanea la estructura, infiere la partición, la propone para validar |
 | `/desplegar-tinglado` | desplegador | Materializa worktrees, protocolo, bandejas desde el contrato |
 | `/orquestar` | integrador | Modo 1-ventana: lanza un subagente por unidad y luego integra |
+| `/orquestar-loop` | integrador | Modo desatendido **freno**: drena bandejas en bucle, PARA antes de mergear/migrar. Úsalo con `/loop /orquestar-loop` |
 | `/inbox` | unidad | Lee su bandeja y trabaja sus tareas (modo N-ventanas) |
 | `/pedir-cableado` | unidad | Encola una petición de zona caliente al integrador |
 | `/integrar` | integrador | Mergea ramas, aplica cableados, reconcilia y aplica migraciones |
 | `/triaje` | buzón | Clasifica una nota del usuario y la encola en la bandeja correcta |
 
+## Modos de autonomía (`runtime.loop`)
+- **off**: `/orquestar` es un disparo único; tú decides cuándo.
+- **freno** (recomendado para desatendido): `/loop /orquestar-loop` drena las bandejas en bucle con
+  subagentes, pero **para y pide OK antes de mergear/cablear/migrar** (lo irreversible). Se
+  autodetiene cuando no queda nada que drenar.
+- **pleno**: integraría sin preguntar hasta vaciar. Desaconsejado con BD compartida.
+
 ## Estado
-v1: un repo principal con worktrees; cross-repo modelado pero gestionado como "externo". Loop y
-triaje-desde-subagentes existen como flags opcionales (off por defecto).
+v1: un repo principal con worktrees; cross-repo modelado pero gestionado como "externo". Loop
+(off/freno/pleno) y triaje-desde-subagentes disponibles como flags de `runtime` en el contrato.

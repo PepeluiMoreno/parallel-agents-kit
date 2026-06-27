@@ -48,7 +48,7 @@
   ],
   "runtime": {
     "modo": "ambos",
-    "loop": "off",
-    "triaje_desde_subagentes": false
+    "loop": "freno",
+    "triaje_desde_subagentes": true
   }
 }

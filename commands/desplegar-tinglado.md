@@ -44,8 +44,9 @@ a mano: aquí sale **derivado** del análisis.
   cópialos de `.claude/kit/commands/`.)
 
 ## Paso 5 — Activar mecanismos opcionales según runtime
-- `runtime.loop != "off"`: deja documentado el modo desatendido y, si se pidió, el comando
-  `orquestar-loop` (drena en bucle; en "freno" para antes de mergear/migrar; en "pleno" no pregunta).
+- `runtime.loop != "off"`: asegúrate de que `.claude/commands/orquestar-loop.md` está disponible
+  (drena en bucle; en "freno" para antes de mergear/migrar; en "pleno" no pregunta) y documenta el
+  uso `/loop /orquestar-loop` en la guía. En "off" puedes omitirlo.
 - `runtime.triaje_desde_subagentes == true`: en el protocolo y en el prompt de subagentes de
   `/orquestar`, habilita que un subagente derive trabajo de otra unidad a su bandeja vía /triaje.
 - `runtime.modo`: si es solo "1-ventana" o solo "n-ventanas", ajusta la guía a ese modo.
