@@ -106,6 +106,20 @@ infiere la partición y la capa de producto.**
 
 ---
 
+## 4.bis Experiencia real de la comunidad (webreactiva.com/blog/claude-agent-teams)
+Un artículo en español con uso real aporta avisos que la doc oficial NO da, y que refuerzan nuestro
+diferencial:
+- ⚠️ **"No hay validación automática entre pasos: si un teammate dice 'listo', el lead se lo cree."**
+  Los errores se propagan en dominó. → Es EXACTAMENTE el agujero que tapan nuestra capa de producto
+  (`/aceptar` contra criterios) y los hooks `TaskCompleted` como gate. No es lujo: es red de seguridad.
+- 💸 **Coste real brutal:** un caso (compilador C) costó **20.000 USD**. Regla: 3 agentes = 3× tokens;
+  mitigar con Sonnet para lo simple. → Desaconseja "desatendido pleno" sin control.
+- 🖥️ La comunidad considera **tmux casi obligatorio** para ver/intervenir cada agente. Ojo: tmux NO
+  funciona en la terminal integrada de VSCode (donde trabaja este usuario) → friconfig de visibilidad.
+- El lead **implementa en vez de delegar** a veces (hay que forzarlo). Confirma limitación de la doc.
+- Madurez: experimental pero funcional; recomiendan **empezar por code reviews, no refactors críticos**.
+- **No menciona roles tipo product owner** → confirma que la capa de producto es diferencial nuestro.
+
 ## 5. Acciones propuestas (a confirmar por el usuario)
 1. **Congelar** el desarrollo del motor de orquestación del kit (no más bandejas/encaminamiento a mano).
 2. **Probar** Agent Teams nativo en SIGA (flag en `settings.local.json`) con una tarea real de 2-3
