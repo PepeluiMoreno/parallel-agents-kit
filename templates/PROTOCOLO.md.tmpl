@@ -1,0 +1,69 @@
+# Protocolo de trabajo multi-agente en paralelo — {{proyecto}}
+
+> **Léeme al empezar cada sesión.** Fuente de verdad de cómo colaboran varios agentes (chats de
+> Claude Code) sobre este repo sin pisarse. Generado por el kit a partir de `particion.json`.
+> Si lo editas a mano, hazlo también en el contrato para que un re-despliegue no lo pise.
+
+## 0. Lo primero al arrancar
+1. Averigua quién eres: lee `.claude/AGENTE.local.md`. Te dice tu `ROL`
+   (`unidad` | `integrador` | `buzon`) y, si eres de unidad, tu `UNIDAD`.
+2. Unidad → ejecuta `/inbox`.  Integrador → `/integrar` (o `/orquestar` en modo 1-ventana).
+   Buzón → espera notas y procésalas con `/triaje`.
+
+## 1. Roles
+| Rol | Dónde vive | Qué hace | Qué NO hace |
+|---|---|---|---|
+| **Agente de unidad** | worktree `{{base_worktrees}}/<unidad>`, rama `feature/<unidad>` | Trabaja SOLO en los ficheros de su unidad. Commitea en su rama. Pide cableado al integrador para zonas calientes. | No edita zonas calientes. No mergea. No aplica migraciones. |
+| **Integrador** | raíz `{{raiz}}`, rama `{{rama_base}}` | Único que edita zonas calientes, mergea ramas, aplica migraciones y gestiona el stack dev compartido. | No desarrolla features de unidad. |
+| **Buzón** | cualquier worktree (no toca código) | Clasifica las notas del usuario por unidad y las encola en `.claude/inbox/`. | No arregla nada. No edita código. |
+
+**Regla de oro:** un fichero tiene **un solo dueño** en cada momento. Las unidades poseen sus
+carpetas; el integrador posee las zonas calientes. Nadie edita lo que no posee.
+
+## 2. Mapa de propiedad (ownership) — derivado del análisis
+{{TABLA_OWNERSHIP}}
+<!-- una fila por unidad: | nombre | descripción | globs que posee | repo (self/externo) | -->
+
+> **Unidades externas (cross-repo):** {{UNIDADES_EXTERNAS}}
+> Viven en otro repositorio; se trabajan allí con rama+PR normales y quedan FUERA del fan-out de
+> worktrees de este repo. La coordinación con el principal es manual (PR + nota en bandeja).
+
+## 3. Zonas calientes (NINGÚN agente de unidad las edita — se piden con `/pedir-cableado`)
+{{LISTA_ZONAS_CALIENTES}}
+<!-- una línea por zona caliente -->
+
+## 4. Flujo de un agente de unidad
+1. `git status` confirma worktree + rama `feature/<unidad>`.
+2. `/inbox` → coge una tarea `[ABIERTO]`.
+3. Desarrolla **solo en tus ficheros** (§2). Commitea `tipo(<unidad>): …`.
+4. ¿Zona caliente? NO la edites: deja tu parte en tu rama y `/pedir-cableado`.
+5. Marca `[HECHO]` con el hash.
+6. Avisa al integrador cuando tu rama esté lista.
+
+## 5. Convención de commits (= atribución)
+`tipo(scope): descripción`. tipos: feat, fix, refactor, revert, chore, docs. **scope = tu unidad
+SIEMPRE.** El `git log` es la traza de quién tocó qué.
+{{CIERRE_COMMIT}}
+
+## 5.bis Local vs. remoto
+Todo el trabajo en paralelo es **local**. Las ramas `feature/<unidad>` viven solo en la máquina;
+NO se suben. Solo se hace `git push` de la rama base, y **solo cuando el usuario lo pide**. El
+remoto recibe la base ya integrada y limpia.
+
+## 6. Reglas duras
+- **Una sola BD/stack compartido.** **Solo el integrador aplica migraciones** (un agente puede
+  *crear* una migración en su rama, pero no la aplica). Si dos unidades crean migraciones a la vez,
+  el integrador reconcilia los heads al integrar.
+- **Un solo stack dev** corriendo, gestionado por el integrador. No arranques tu propio backend/
+  frontend en tu worktree (colisión de puertos/BD).
+
+## 7. Mecanismos de runtime activos
+- Modo: **{{RUNTIME_MODO}}** (1-ventana = `/orquestar`; n-ventanas = un chat por unidad con `/inbox`).
+- Loop: **{{RUNTIME_LOOP}}** (off / freno = para antes de mergear-migrar / pleno = desatendido).
+- Triaje desde subagentes: **{{RUNTIME_TRIAJE_SUB}}** (si on, un subagente deriva trabajo de otra
+  unidad a su bandeja en vez de invadirla).
+
+## 8. El buzón y las bandejas (`.claude/inbox/`)
+El usuario reporta de forma desordenada al chat buzón; `/triaje` clasifica por unidad y escribe un
+bloque `[ABIERTO]` en `.claude/inbox/<unidad>.md`. Las peticiones de cableado van a
+`.claude/inbox/integrador.md`. Formato en `.claude/inbox/_README.md`.

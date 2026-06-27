@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "proyecto": "SIGA (ejemplo)",
+  "vcs": "git",
+  "raiz": "/opt/docker/apps/SIGA",
+  "base_worktrees": "/opt/docker/apps/SIGA-wt",
+  "rama_base": "master",
+  "unidades": [
+    {
+      "nombre": "economico",
+      "descripcion": "Cuotas, recibos, donaciones, remesas, contabilidad",
+      "repo": "self",
+      "posee": ["backend/app/modules/economico/**", "frontend/src/modules/economico/**", "frontend/src/components/economico/**"],
+      "resolvers": ["economico_resolvers.py", "presupuesto_resolvers.py"]
+    },
+    {
+      "nombre": "membresia",
+      "descripcion": "Miembros, socios, contactos, vinculaciones, agrupaciones",
+      "repo": "self",
+      "posee": ["backend/app/modules/membresia/**", "frontend/src/modules/membresia/**", "frontend/src/components/miembros/**"],
+      "resolvers": ["membresia_resolvers.py", "socios_resolvers.py"]
+    },
+    {
+      "nombre": "actividades",
+      "descripcion": "Grupos de trabajo, acciones, campañas, eventos",
+      "repo": "self",
+      "posee": ["backend/app/modules/actividades/**", "frontend/src/modules/actividades/**"],
+      "resolvers": ["actividad_resolvers.py", "campania_resolvers.py"]
+    },
+    {
+      "nombre": "datos-osm",
+      "descripcion": "Pipeline ETL/OSM de datos abiertos (vive en otro repositorio)",
+      "repo": "/opt/docker/apps/opendatamanager",
+      "posee": ["app/fetchers/**", "app/builders/**", "app/refresh/**", "app/manager/**", "app/scheduler.py"]
+    }
+  ],
+  "zonas_calientes": [
+    "frontend/src/router/index.js",
+    "frontend/src/components/common/**",
+    "backend/app/graphql/schema_simple.py",
+    "backend/app/graphql/mutations.py",
+    "backend/main.py",
+    "backend/alembic/versions/**"
+  ],
+  "roles_transversales": [
+    { "rol": "integrador", "notas": "árbol principal en master" },
+    { "rol": "buzon" }
+  ],
+  "runtime": {
+    "modo": "ambos",
+    "loop": "off",
+    "triaje_desde_subagentes": false
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/PepeluiMoreno/parallel-agents-kit/schema/particion.schema.json",
+  "title": "Partición de un proyecto para el tinglado multi-agente",
+  "description": "Contrato de DATOS PUROS que produce el agente arquitecto (/analizar-proyecto) tras escanear la estructura del proyecto, y que consume el desplegador (/desplegar-tinglado) para materializar el scaffolding. Es editable a mano: revísalo y ajústalo antes de desplegar. El motor NO ejecuta lógica del proyecto; solo lee este mapa.",
+  "type": "object",
+  "required": ["version", "vcs", "raiz", "unidades", "zonas_calientes", "roles_transversales", "runtime"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Versión del formato del contrato."
+    },
+    "proyecto": {
+      "type": "string",
+      "description": "Nombre legible del proyecto (informativo)."
+    },
+    "vcs": {
+      "type": "string",
+      "enum": ["git"],
+      "description": "Sistema de control de versiones. v1 exige git: el aislamiento se basa en git worktrees. Sin git, el arquitecto avisa y ofrece 'git init' (no escribe este contrato hasta que haya git)."
+    },
+    "raiz": {
+      "type": "string",
+      "description": "Ruta absoluta de la raíz del repo principal (donde vive el integrador, rama por defecto)."
+    },
+    "base_worktrees": {
+      "type": "string",
+      "description": "Ruta base donde se crearán los worktrees de las unidades. Por convención '<raiz>-wt'. Cada unidad self ocupa '<base_worktrees>/<nombre>'."
+    },
+    "rama_base": {
+      "type": "string",
+      "default": "master",
+      "description": "Rama de la que parten las ramas de unidad y a la que integra el integrador (p.ej. master o main)."
+    },
+    "unidades": {
+      "type": "array",
+      "description": "Unidades de trabajo paralelas = agentes. El EJE de partición es libre (dominio/feature, capa técnica, mixto): lo elige el arquitecto según la estructura. Requisito duro: los globs 'posee' de dos unidades NO deben solaparse (ficheros disjuntos = paralelo seguro).",
+      "items": {
+        "type": "object",
+        "required": ["nombre", "repo", "posee"],
+        "additionalProperties": false,
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$",
+            "description": "Identificador en kebab/snake. Da nombre a la rama (feature/<nombre>), al worktree y a la bandeja."
+          },
+          "descripcion": {
+            "type": "string",
+            "description": "Qué cubre esta unidad, en una línea (para el protocolo y el manual)."
+          },
+          "repo": {
+            "type": "string",
+            "description": "'self' = vive en el repo principal (el motor v1 le crea worktree). Cualquier otro valor = ruta a OTRO repositorio: en v1 se marca 'gestión externa' (el agente trabaja allí con rama+PR normal, fuera del fan-out de worktrees).",
+            "default": "self"
+          },
+          "posee": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" },
+            "description": "Globs de ficheros/carpetas que esta unidad posee y puede editar libremente. Disjuntos respecto a otras unidades y a 'zonas_calientes'."
+          },
+          "resolvers": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Opcional. Ficheros que la unidad posee pero cuyo REGISTRO global es zona caliente (p.ej. resolvers que se agregan a un schema raíz). El fichero lo edita la unidad; el cableado lo pide al integrador."
+          }
+        }
+      }
+    },
+    "zonas_calientes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Ficheros/globs que tocan MUCHAS unidades (routers raíz, schema raíz, migraciones, design system, config global, event bus). Dueño único: el integrador. Ninguna unidad los edita; se piden con /pedir-cableado."
+    },
+    "roles_transversales": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rol"],
+        "additionalProperties": false,
+        "properties": {
+          "rol": {
+            "type": "string",
+            "enum": ["integrador", "buzon"],
+            "description": "integrador: único que toca zonas calientes, mergea y migra. buzon: clasifica notas del usuario y las encola (no toca código)."
+          },
+          "notas": { "type": "string" }
+        }
+      },
+      "description": "Roles que no son unidades paralelas. Siempre incluye 'integrador'; 'buzon' es recomendable."
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mecanismos OPCIONALES del runtime. Por defecto desactivados; se activan conscientemente.",
+      "properties": {
+        "modo": {
+          "type": "string",
+          "enum": ["1-ventana", "n-ventanas", "ambos"],
+          "default": "ambos",
+          "description": "1-ventana: un chat lanza subagentes (/orquestar). n-ventanas: un chat por unidad (/inbox). ambos: deja disponibles los dos."
+        },
+        "loop": {
+          "type": "string",
+          "enum": ["off", "freno", "pleno"],
+          "default": "off",
+          "description": "off: sin loop. freno: el bucle drena bandejas con subagentes pero PARA y pide OK antes de mergear/migrar. pleno: drena+integra+migra sin preguntar hasta vaciar (mayor riesgo)."
+        },
+        "triaje_desde_subagentes": {
+          "type": "boolean",
+          "default": false,
+          "description": "Si true, un subagente que detecte trabajo de OTRA unidad puede dejarlo en la bandeja de la unidad dueña (vía /triaje) en vez de invadirla."
+        }
+      }
+    }
+  }
+}

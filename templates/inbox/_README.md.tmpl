@@ -1,0 +1,44 @@
+# Bandejas de entrada (inbox) — coordinación multi-agente
+
+Cola en ficheros del tinglado. No contiene código; son colas de trabajo en markdown, append-only,
+que conectan al usuario, al buzón y a los agentes. Protocolo completo en
+[`../PROTOCOLO_MULTIAGENTE.md`](../PROTOCOLO_MULTIAGENTE.md).
+
+## Ficheros
+| Fichero | Quién escribe | Quién lee |
+|---|---|---|
+| `<unidad>.md` | el buzón (`/triaje`), o cualquiera dejando una nota | el agente de esa unidad (`/inbox`) |
+| `integrador.md` | agentes de unidad (`/pedir-cableado`) | el integrador (`/integrar`) |
+| `_triage_log.md` | el buzón (auditoría de cada reparto) | quien quiera revisar el histórico |
+
+Hay una bandeja por unidad: {{LISTA_UNIDADES}}.
+
+## Formato de una entrada de bandeja
+Una entrada = un bloque. Append al final. Estados: `[ABIERTO]` → `[EN CURSO]` → `[HECHO]`.
+
+```markdown
+## [ABIERTO] <fecha ISO> · origen:buzón · prioridad:media
+**Para:** <unidad>
+**Asunto:** <resumen en una línea>
+**Detalle:** <texto literal de la nota del usuario>
+**Pista de ubicación:** <fichero/área probable — opcional>
+---
+```
+
+Al resolver: `[ABIERTO]` → `[HECHO]` y añade `**Resuelto:** <hash> · <una línea>`.
+`prioridad` ∈ alta|media|baja. `origen` ∈ buzón|usuario|<otra-unidad>.
+
+## Formato de una petición de cableado (→ `integrador.md`)
+```markdown
+## [PENDIENTE] <fecha ISO> · de:<unidad> · rama:feature/<unidad>
+**Necesito en zona caliente:**
+- <fichero>: <qué cambio> (estado en mi rama: …)
+**Tras mergear mi rama**, aplica estos cableados.
+---
+```
+El integrador, al hacerlo, cambia `[PENDIENTE]` → `[CABLEADO]` + hash.
+
+## Reglas
+- **Append-only**: nunca borres entradas; cámbiales el estado. El histórico es la auditoría.
+- **Una nota = un destinatario**: si toca dos unidades, dos entradas (una por bandeja).
+- **Texto literal del usuario** en `**Detalle:**`; la interpretación va en `**Pista de ubicación:**`.
