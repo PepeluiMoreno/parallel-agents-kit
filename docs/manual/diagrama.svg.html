@@ -1,0 +1,111 @@
+<!-- Escenario: 4 módulos en paralelo. SVG vectorial a color, ancho ~ 760px útiles A4 -->
+<svg viewBox="0 0 760 560" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowI" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4f46e5"/>
+    </marker>
+    <linearGradient id="gMaster" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/><stop offset="1" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ====== USUARIO + VENTANA ÚNICA ====== -->
+  <g>
+    <rect x="40" y="20" width="680" height="74" rx="10" fill="url(#gMaster)" stroke="#6366f1" stroke-width="1.5"/>
+    <text x="60" y="46" font-size="15" font-weight="700" fill="#3730a3">👤 Tú · 1 sola ventana de VSCode</text>
+    <text x="60" y="68" font-size="12.5" fill="#4338ca">carpeta /opt/docker/apps/SIGA (rama master) — aquí vive el chat ORQUESTADOR-INTEGRADOR</text>
+    <text x="60" y="86" font-size="12" font-weight="700" fill="#4f46e5">escribes:  /orquestar</text>
+  </g>
+
+  <!-- flecha usuario -> integrador -->
+  <line x1="380" y1="94" x2="380" y2="120" stroke="#4f46e5" stroke-width="2" marker-end="url(#arrowI)"/>
+
+  <!-- ====== INTEGRADOR (CHAT PRINCIPAL = AGENTE) ====== -->
+  <g>
+    <rect x="250" y="120" width="260" height="62" rx="10" fill="#4f46e5" stroke="#4338ca" stroke-width="1.5"/>
+    <text x="380" y="146" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">AGENTE orquestador-integrador</text>
+    <text x="380" y="166" font-size="11.5" fill="#e0e7ff" text-anchor="middle">lee las bandejas y lanza un SUBAGENTE por módulo</text>
+  </g>
+
+  <!-- 4 flechas de fan-out -->
+  <line x1="300" y1="182" x2="120" y2="232" stroke="#4f46e5" stroke-width="1.6" marker-end="url(#arrowI)"/>
+  <line x1="350" y1="182" x2="300" y2="232" stroke="#4f46e5" stroke-width="1.6" marker-end="url(#arrowI)"/>
+  <line x1="410" y1="182" x2="470" y2="232" stroke="#4f46e5" stroke-width="1.6" marker-end="url(#arrowI)"/>
+  <line x1="460" y1="182" x2="650" y2="232" stroke="#4f46e5" stroke-width="1.6" marker-end="url(#arrowI)"/>
+
+  <!-- ====== 4 SUBAGENTES / WORKTREES EN PARALELO ====== -->
+  <!-- columna 1: económico -->
+  <g>
+    <rect x="36" y="234" width="158" height="120" rx="9" fill="#ecfdf5" stroke="#10b981" stroke-width="1.4"/>
+    <text x="115" y="256" font-size="12.5" font-weight="700" fill="#047857" text-anchor="middle">SUBAGENTE económico</text>
+    <text x="115" y="276" font-size="10.5" fill="#065f46" text-anchor="middle">worktree:</text>
+    <text x="115" y="291" font-size="9.5" fill="#065f46" text-anchor="middle">SIGA-wt/economico</text>
+    <text x="115" y="309" font-size="10.5" fill="#065f46" text-anchor="middle">rama feature/economico</text>
+    <rect x="52" y="320" width="126" height="24" rx="5" fill="#d1fae5"/>
+    <text x="115" y="336" font-size="10" fill="#065f46" text-anchor="middle">edita SOLO lo suyo</text>
+  </g>
+  <!-- columna 2: membresía -->
+  <g>
+    <rect x="204" y="234" width="158" height="120" rx="9" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.4"/>
+    <text x="283" y="256" font-size="12.5" font-weight="700" fill="#1d4ed8" text-anchor="middle">SUBAGENTE membresía</text>
+    <text x="283" y="276" font-size="10.5" fill="#1e40af" text-anchor="middle">worktree:</text>
+    <text x="283" y="291" font-size="9.5" fill="#1e40af" text-anchor="middle">SIGA-wt/membresia</text>
+    <text x="283" y="309" font-size="10.5" fill="#1e40af" text-anchor="middle">rama feature/membresia</text>
+    <rect x="220" y="320" width="126" height="24" rx="5" fill="#dbeafe"/>
+    <text x="283" y="336" font-size="10" fill="#1e40af" text-anchor="middle">edita SOLO lo suyo</text>
+  </g>
+  <!-- columna 3: actividades -->
+  <g>
+    <rect x="398" y="234" width="158" height="120" rx="9" fill="#fff7ed" stroke="#f59e0b" stroke-width="1.4"/>
+    <text x="477" y="256" font-size="12.5" font-weight="700" fill="#b45309" text-anchor="middle">SUBAGENTE actividades</text>
+    <text x="477" y="276" font-size="10.5" fill="#92400e" text-anchor="middle">worktree:</text>
+    <text x="477" y="291" font-size="9.5" fill="#92400e" text-anchor="middle">SIGA-wt/actividades</text>
+    <text x="477" y="309" font-size="10.5" fill="#92400e" text-anchor="middle">rama feature/actividades</text>
+    <rect x="414" y="320" width="126" height="24" rx="5" fill="#fde68a"/>
+    <text x="477" y="336" font-size="10" fill="#92400e" text-anchor="middle">edita SOLO lo suyo</text>
+  </g>
+  <!-- columna 4: secretaría -->
+  <g>
+    <rect x="566" y="234" width="158" height="120" rx="9" fill="#fdf4ff" stroke="#a855f7" stroke-width="1.4"/>
+    <text x="645" y="256" font-size="12.5" font-weight="700" fill="#7e22ce" text-anchor="middle">SUBAGENTE secretaría</text>
+    <text x="645" y="276" font-size="10.5" fill="#6b21a8" text-anchor="middle">worktree:</text>
+    <text x="645" y="291" font-size="9.5" fill="#6b21a8" text-anchor="middle">SIGA-wt/secretaria</text>
+    <text x="645" y="309" font-size="10.5" fill="#6b21a8" text-anchor="middle">rama feature/secretaria</text>
+    <rect x="582" y="320" width="126" height="24" rx="5" fill="#f3e8ff"/>
+    <text x="645" y="336" font-size="10" fill="#6b21a8" text-anchor="middle">edita SOLO lo suyo</text>
+  </g>
+
+  <!-- 4 flechas de vuelta (resultado) -->
+  <line x1="120" y1="356" x2="300" y2="404" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="300" y1="356" x2="350" y2="404" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="470" y1="356" x2="410" y2="404" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="650" y1="356" x2="460" y2="404" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- ====== INTEGRACIÓN ====== -->
+  <g>
+    <rect x="230" y="406" width="300" height="64" rx="10" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+    <text x="380" y="430" font-size="13.5" font-weight="700" fill="#ffffff" text-anchor="middle">El MISMO chat integra  ·  /integrar</text>
+    <text x="380" y="450" font-size="10.5" fill="#cbd5e1" text-anchor="middle">mergea ramas → master · cablea zonas calientes</text>
+    <text x="380" y="464" font-size="10.5" fill="#cbd5e1" text-anchor="middle">aplica migraciones UNA sola vez · valida el stack</text>
+  </g>
+
+  <line x1="380" y1="470" x2="380" y2="496" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ====== MASTER LIMPIO ====== -->
+  <g>
+    <rect x="250" y="498" width="260" height="46" rx="9" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="380" y="520" font-size="13" font-weight="700" fill="#15803d" text-anchor="middle">master integrado y limpio</text>
+    <text x="380" y="537" font-size="10.5" fill="#166534" text-anchor="middle">(solo se sube a GitHub cuando TÚ lo pides)</text>
+  </g>
+
+  <!-- nota lateral buzón -->
+  <g>
+    <rect x="566" y="406" width="158" height="64" rx="9" fill="#fef2f2" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="645" y="426" font-size="11.5" font-weight="700" fill="#b91c1c" text-anchor="middle">📥 Buzón (opcional)</text>
+    <text x="645" y="444" font-size="9.5" fill="#991b1b" text-anchor="middle">/triaje reparte tus quejas</text>
+    <text x="645" y="458" font-size="9.5" fill="#991b1b" text-anchor="middle">a la bandeja de cada módulo</text>
+  </g>
+</svg>
