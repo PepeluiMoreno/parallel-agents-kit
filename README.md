@@ -33,7 +33,7 @@ Luego, en un chat de Claude Code abierto en ese repo:
 ```
 /analizar-proyecto     # arquitecto: escanea y PROPONE la partición (no despliega)
                        # revisas/editas .claude/kit/particion.json
-/desplegar-tinglado    # materializa worktrees, protocolo, bandejas
+/desplegar-equipo    # materializa worktrees, protocolo, bandejas
 /orquestar             # trabaja en modo 1-ventana (o /inbox por unidad en modo N-ventanas)
 ```
 
@@ -48,7 +48,7 @@ normal, fuera del fan-out de worktrees).
 | Comando | Rol | Qué hace |
 |---|---|---|
 | `/analizar-proyecto` | arquitecto | Escanea la estructura, infiere la partición, la propone para validar |
-| `/desplegar-tinglado` | desplegador | Materializa worktrees, protocolo, bandejas desde el contrato |
+| `/desplegar-equipo` | desplegador | Materializa worktrees, protocolo, bandejas desde el contrato |
 | `/orquestar` | integrador | Modo 1-ventana: lanza un subagente por unidad y luego integra |
 | `/orquestar-loop` | integrador | Modo desatendido **freno**: drena bandejas en bucle, PARA antes de mergear/migrar. Úsalo con `/loop /orquestar-loop` |
 | `/inbox` | unidad | Lee su bandeja y trabaja sus tareas (modo N-ventanas) |

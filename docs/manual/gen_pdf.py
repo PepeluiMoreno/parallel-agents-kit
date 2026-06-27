@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Genera el manual del tinglado multi-agente en PDF (WeasyPrint).
+# Genera el manual del Equipo de desarrollo virtual en PDF (WeasyPrint).
 import markdown, pathlib
 from weasyprint import HTML
 
@@ -16,10 +16,11 @@ Cuando trabajas con **un solo chat** de Claude, todo va en fila india: una tarea
 otra. Si tu proyecto tiene partes independientes (lo económico, los miembros, las actividades…),
 estás desaprovechando que **podrían avanzar a la vez**.
 
-El **tinglado multi-agente** convierte tu proyecto en un equipo: varios agentes trabajando **en
-paralelo**, cada uno en su parcela, sin pisarse, con un **jefe** que junta el trabajo y un **buzón**
-que recoge tus peticiones y las reparte. El objetivo es uno solo: **disparar la productividad**
-haciendo varias cosas a la vez con seguridad.
+El **Equipo de desarrollo virtual** convierte tu proyecto en eso, un equipo: varios agentes
+trabajando **en paralelo**, cada uno en su parcela, sin pisarse, con un **jefe** que junta el
+trabajo, un **buzón** que recoge tus peticiones y las reparte, y un **responsable de producto** que
+diseña contigo qué construir. El objetivo es uno solo: **disparar la productividad** haciendo varias
+cosas a la vez con seguridad.
 
 > **La promesa:** sueltas peticiones desordenadas; el equipo se organiza, trabaja en paralelo y te
 > devuelve el proyecto integrado y limpio. Tú decides cuándo se sube a producción.
@@ -35,7 +36,7 @@ haciendo varias cosas a la vez con seguridad.
 trabajo** del mismo repo en **otra carpeta**, que comparte el mismo historial pero tiene su propia
 "mesa de trabajo" y su propia rama. Así, el agente de *económico* edita en su carpeta y el de
 *miembros* en la suya, **a la vez, sin tocar los mismos ficheros**. No son copias duplicadas que
-luego haya que sincronizar a mano: son ventanas al mismo repo. *Por eso el tinglado necesita git.*
+luego haya que sincronizar a mano: son ventanas al mismo repo. *Por eso el equipo necesita git.*
 
 **Rama (branch).** Una línea de trabajo paralela. Cada agente trabaja en su rama (`feature/economico`,
 `feature/miembros`…); el jefe las **fusiona** (merge) en la rama principal cuando están listas.
@@ -61,7 +62,7 @@ Centraliza lo delicado para que nada choque.
 
 **Loop (modo en bucle).** Hacer que el equipo repita el trabajo **solo**, sin que tú relances cada
 vez: va vaciando las tareas pendientes hasta que no queda ninguna. Útil para dejarlo trabajando
-mientras haces otra cosa. Se explica en el apartado 7.
+mientras haces otra cosa. Se explica en el apartado 8.
 
 ---
 
@@ -120,13 +121,15 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 | Comando | Quién lo usa | Qué hace |
 |---|---|---|
 | `/analizar-proyecto` | el arquitecto | Escanea la estructura del proyecto y **propone** cómo repartirlo en unidades. No despliega: espera tu visto bueno. |
-| `/desplegar-tinglado` | el arquitecto | Con tu reparto aprobado, **monta** todo: worktrees, protocolo, bandejas, comandos. |
+| `/desplegar-equipo` | el arquitecto | Con tu reparto aprobado, **monta** todo: worktrees, protocolo, bandejas, comandos. |
 | `/orquestar` | el jefe | **Modo 1 ventana.** Lanza un subagente por unidad con tareas y luego integra. |
-| `/orquestar-loop` | el jefe | **Modo en bucle (desatendido).** Va resolviendo las tareas pendientes solo, sin que relances; **te pide permiso** antes de juntar el trabajo o migrar. Se usa con `/loop`. Ver apartado 7. |
+| `/orquestar-loop` | el jefe | **Modo en bucle (desatendido).** Va resolviendo las tareas pendientes solo, sin que relances; **te pide permiso** antes de juntar el trabajo o migrar. Se usa con `/loop`. Ver apartado 8. |
 | `/inbox` | un agente de unidad | Lee su bandeja y se pone a trabajar sus tareas (modo "una ventana por unidad"). |
 | `/pedir-cableado` | un agente de unidad | Cuando necesita una zona caliente, **no la toca**: deja la petición al jefe. |
 | `/integrar` | el jefe | Fusiona las ramas listas, aplica los cableados pedidos y las migraciones. |
 | `/triaje` | el buzón | Clasifica una nota tuya y la **encola** en la bandeja de la unidad correcta. |
+| `/producto` | el responsable de producto | **Propone** funcionalidad, la **diseña contigo** paso a paso y, con tu OK, la descompone en tareas y las encola. Ver apartado 7. |
+| `/aceptar` | el responsable de producto | Comprueba que una funcionalidad terminada **cumple lo acordado** y te lo resume para tu visto bueno. |
 
 ---
 
@@ -137,16 +140,24 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 ```
 1.  /analizar-proyecto      → el arquitecto propone el reparto en unidades
 2.  (revisas y ajustas el reparto)
-3.  /desplegar-tinglado     → se monta todo el andamiaje
+3.  /desplegar-equipo       → se monta todo el andamiaje
 ```
 
-**El día a día (lo habitual):**
+**Diseñar funcionalidad nueva (cuando quieres construir algo, no arreglar):**
 
 ```
-4.  "eres el buzón, /triaje: <tu queja tal cual>"     → encola la tarea
+/producto                  → el responsable de producto propone y diseña contigo;
+                             con tu OK, encola las tareas para el equipo
+/aceptar                   → cuando esté hecho, valida que cumple lo acordado
+```
+
+**El día a día (bugs y mejoras sueltas):**
+
+```
+"eres el buzón, /triaje: <tu queja tal cual>"     → encola la tarea
         (puedes soltar varias quejas seguidas; el buzón las reparte)
-5.  /orquestar              → el jefe lanza los subagentes y luego integra
-6.  (cuando quieras subir)  "sube la rama principal a GitHub"
+/orquestar                 → el jefe lanza los subagentes y luego integra
+(cuando quieras subir)     "sube la rama principal a GitHub"
 ```
 
 **Dejarlo trabajando solo (cuando tienes varias tareas y vas a estar a otra cosa):**
@@ -154,7 +165,7 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 ```
 /loop /orquestar-loop       → va resolviendo las tareas pendientes solo;
                               te pide permiso antes de juntar el trabajo o migrar;
-                              se apaga solo cuando no queda nada. (Ver apartado 7.)
+                              se apaga solo cuando no queda nada. (Ver apartado 8.)
 ```
 
 > **Local vs. GitHub.** Todo el baile de ramas ocurre **en tu ordenador**. En GitHub solo está la
@@ -162,7 +173,40 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 
 ---
 
-## 7 · Trabajar desatendido: el modo en bucle
+## 7 · Decidir QUÉ construir: el responsable de producto
+
+Hasta aquí el equipo sabe **construir**. Pero ¿quién decide **qué** construir? Para eso está el
+**responsable de producto** (en inglés, *product owner*): un agente que **no programa**, sino que
+**diseña producto contigo** y luego le pasa el encargo al equipo.
+
+### Cómo trabaja
+Es **proactivo**: conoce tu negocio (a partir de una breve *ficha de dominio* que apruebas al
+principio) y **te propone funcionalidades** que cree que faltan. A partir de ahí, vais diseñándolas
+**en conversación, una decisión cada vez**, y él **te pide el visto bueno en cada paso**:
+
+1. **Propone** una funcionalidad y te explica por qué. → la abordáis o no.
+2. **Alcance y flujos:** qué entra, qué no, y cómo es el proceso paso a paso. → lo validas.
+3. **UI:** cómo se ve y se usa. → lo validas.
+4. **Reglas de negocio:** validaciones, permisos, casos límite. → las confirmas.
+5. **Criterios de aceptación:** la lista de "esto está hecho cuando…".
+6. **Descompone** la funcionalidad en tareas (una por área) y **te las enseña antes de encolar**.
+
+Solo con tu **OK final**, escribe esas tareas en las bandejas —con todo el detalle: flujo, UI,
+reglas y criterios— y el equipo de desarrollo se pone (`/orquestar`). Cuando terminan, el propio
+responsable **comprueba que lo entregado cumple lo acordado** y te lo resume para tu visto bueno.
+
+### Dónde encaja
+Llevas el diálogo con el comando `/producto`; la validación final, con `/aceptar`. Todo lo decidido
+queda guardado en un **backlog de producto** (una ficha por funcionalidad, con su estado), para que
+nada se pierda entre sesiones y veas siempre qué hay propuesto, aprobado o en marcha.
+
+> **Responsable de producto vs. buzón.** El **buzón** es reactivo: recoge bugs y quejas sueltas que
+> tú reportas. El **responsable de producto** es proactivo: propone y diseña **funcionalidad nueva**
+> contigo. Uno apaga fuegos; el otro construye el futuro del producto.
+
+---
+
+## 8 · Trabajar desatendido: el modo en bucle
 
 ### ¿Qué es?
 Normalmente tú disparas el trabajo: escribes `/orquestar` y el equipo hace una ronda. El **modo en
@@ -228,7 +272,7 @@ no se queda dando vueltas en vano. En resumen: trabaja solo en lo seguro, te lla
 
 ---
 
-## 8 · Las tres reglas que nunca se rompen
+## 9 · Las tres reglas que nunca se rompen
 
 1. **Un fichero, un dueño.** Cada unidad edita lo suyo; el jefe, las zonas calientes. Nadie toca lo
    que no posee. Si una tarea cruza fronteras, se **deriva** a la bandeja de la unidad dueña (no se
@@ -245,7 +289,7 @@ CSS = r"""
   size: A4;
   margin: 20mm 18mm 18mm 18mm;
   @bottom-center {
-    content: "Manual del tinglado multi-agente · " counter(page) " / " counter(pages);
+    content: "Equipo de desarrollo virtual · " counter(page) " / " counter(pages);
     font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 8.5pt; color: #94a3b8;
   }
 }
@@ -318,14 +362,14 @@ h2 { page-break-inside: avoid; }
 COVER = r"""
 <div class="cover">
   <div class="kicker">Guía práctica</div>
-  <h1>El tinglado<br>multi-agente</h1>
-  <div class="sub">Varios agentes de Claude Code trabajando en paralelo sobre el mismo proyecto,
-  sin pisarse — desde una sola ventana.</div>
+  <h1>Equipo de<br>desarrollo virtual</h1>
+  <div class="sub">Agentes de Claude Code que diseñan, implementan e integran tu aplicación en
+  paralelo sobre el mismo proyecto, sin pisarse — desde una sola ventana.</div>
   <div class="badges">
-    <span class="badge">git worktrees</span>
-    <span class="badge">subagentes en paralelo</span>
+    <span class="badge">responsable de producto</span>
+    <span class="badge">desarrollo en paralelo</span>
     <span class="badge">integrador &middot; buzón</span>
-    <span class="badge">modo 1 ventana</span>
+    <span class="badge">desde una sola ventana</span>
     <span class="badge">modo en bucle</span>
   </div>
   <div class="foot">Proyecto SIGA &middot; generado con WeasyPrint</div>

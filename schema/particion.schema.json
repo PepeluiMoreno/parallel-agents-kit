@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/PepeluiMoreno/parallel-agents-kit/schema/particion.schema.json",
-  "title": "Partición de un proyecto para el tinglado multi-agente",
-  "description": "Contrato de DATOS PUROS que produce el agente arquitecto (/analizar-proyecto) tras escanear la estructura del proyecto, y que consume el desplegador (/desplegar-tinglado) para materializar el scaffolding. Es editable a mano: revísalo y ajústalo antes de desplegar. El motor NO ejecuta lógica del proyecto; solo lee este mapa.",
+  "title": "Partición de un proyecto para el equipo de desarrollo virtual",
+  "description": "Contrato de DATOS PUROS que produce el agente arquitecto (/analizar-proyecto) tras escanear la estructura del proyecto, y que consume el desplegador (/desplegar-equipo) para materializar el scaffolding. Es editable a mano: revísalo y ajústalo antes de desplegar. El motor NO ejecuta lógica del proyecto; solo lee este mapa.",
   "type": "object",
   "required": ["version", "vcs", "raiz", "unidades", "zonas_calientes", "roles_transversales", "runtime"],
   "additionalProperties": false,

@@ -2,11 +2,11 @@
 description: (Arquitecto) Escanea la estructura del proyecto, infiere la partición multi-agente y la propone para tu validación
 ---
 
-Eres el **ARQUITECTO** del tinglado multi-agente. Tu trabajo: mirar este proyecto (sus carpetas,
+Eres el **ARQUITECTO** del equipo de desarrollo virtual. Tu trabajo: mirar este proyecto (sus carpetas,
 sus módulos, su stack) e **inferir la mejor partición** del trabajo entre agentes, sin que nadie
 te la teclee. Produces un `particion.json` (contrato de datos, schema en `.claude/kit/schema/
 particion.schema.json`) y **lo propones al usuario para que lo valide**. NO despliegas nada aquí:
-eso es `/desplegar-tinglado` tras el OK.
+eso es `/desplegar-equipo` tras el OK.
 
 ## Principio rector
 Particiona por la dimensión que **minimiza el solapamiento de ficheros** entre agentes y
@@ -17,7 +17,7 @@ mejor logre eso en ESTE proyecto; no hay un eje "correcto" universal.
 
 ## Paso 0 — Requisitos
 1. Comprueba que hay git: `git rev-parse --is-inside-work-tree`. Si NO, **para**: explica que el
-   tinglado necesita git (el aislamiento son worktrees) y ofrécete a hacer `git init`. No
+   equipo de desarrollo virtual necesita git (el aislamiento son worktrees) y ofrécete a hacer `git init`. No
    escribas el contrato sin git.
 2. Localiza la raíz: `git rev-parse --show-toplevel`. Mira la rama por defecto (`master`/`main`).
 
@@ -59,7 +59,7 @@ toca *casi todo* el proyecto y que provocan conflicto si dos agentes los editan 
    - cualquier glob dudoso o solapamiento que tuviste que resolver,
    - qué quedó fuera de toda unidad y por qué (irá al integrador).
 3. Pide validación: "¿ajusto algo antes de desplegar?". El usuario puede editar el JSON a mano.
-4. Cuando dé el OK, dile que ejecute `/desplegar-tinglado`.
+4. Cuando dé el OK, dile que ejecute `/desplegar-equipo`.
 
 No crees worktrees, ramas ni ficheros de identidad aquí. Solo el contrato + la propuesta.
 

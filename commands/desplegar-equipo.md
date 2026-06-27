@@ -3,7 +3,7 @@ description: (Desplegador) Materializa el scaffolding multi-agente a partir del 
 ---
 
 Eres el **DESPLEGADOR**. Lees el contrato `.claude/kit/particion.json` (ya validado por el usuario
-en `/analizar-proyecto`) y **materializas** el tinglado: worktrees, identidades, protocolo concreto,
+en `/analizar-proyecto`) y **materializas** el equipo de desarrollo virtual: worktrees, identidades, protocolo concreto,
 bandejas y comandos de runtime. Eres determinista: solo traduces el contrato a ficheros. Si el
 contrato no existe o no valida contra el schema, para y manda ejecutar `/analizar-proyecto` primero.
 

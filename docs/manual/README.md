@@ -1,4 +1,4 @@
-# Manual del tinglado (PDF)
+# Manual del equipo de desarrollo virtual (PDF)
 
 Genera `MANUAL_MULTIAGENTE.pdf` (portada + conceptos + diagrama SVG + comandos + secuencia + loops).
 
