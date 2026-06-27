@@ -120,6 +120,28 @@ diferencial:
 - Madurez: experimental pero funcional; recomiendan **empezar por code reviews, no refactors críticos**.
 - **No menciona roles tipo product owner** → confirma que la capa de producto es diferencial nuestro.
 
+## 4.ter Piezas reutilizables (guía FlorianBruniaux/claude-code-ultimate-guide)
+Catálogo de buenas prácticas (no competidor; material para endurecer NUESTRO diferencial). Lo
+adoptable de verdad:
+- **Test "SPEC" para validar una subtarea antes de encolarla** (Específica · Evaluable
+  programáticamente · alcance explícito · acotada). → Adoptar en `/productor` al descomponer y en los
+  criterios de aceptación: filtra tareas mal definidas antes de que el equipo las coja.
+- **Presupuestos de tokens por agente** ("mantente bajo 180K; auto-pausa y reporta al 85%"). →
+  Respuesta directa al riesgo de coste (caso 20k USD). Adoptar en el prompt de subagentes de `/coordinar`.
+- **Ciclos de recuperación de contexto (máx 3)**: el subagente pide más contexto de forma acotada en
+  vez de inventar ("necesito [X] porque [Y]"). Mejora calidad sin barra libre.
+- **Red flags para intervención humana**: agentes que acaban a tiempos muy dispares (mala
+  descomposición), muchos conflictos de merge, tests fallando tras merge, naming inconsistente. →
+  Checklist para el integrador en `/aplicar-integracion`.
+- **Patrón dual-instance** (planificador SIN herramientas → revisión humana → ejecutor CON
+  herramientas). Encaja con nuestro arquitecto/PO: diseñar en read-only, aprobar, luego ejecutar.
+
+Confirma además (sin novedad): sus 3 arquitecturas (fan-out/fan-in, fases paralelizadas, delegación
+jerárquica) = las nuestras; worktrees + ficheros disjuntos = su recomendación central; y **sigue sin
+haber partición inferida ni capa de producto** → diferencial nuestro intacto. Sus 23 agentes
+(code-reviewer, security-auditor, test-writer…) son subagent definitions reutilizables al pivotar.
+Cautela: las métricas del repo (casos "20k USD", "500K horas", quizzes) no están verificadas.
+
 ## 5. Acciones propuestas (a confirmar por el usuario)
 1. **Congelar** el desarrollo del motor de orquestación del kit (no más bandejas/encaminamiento a mano).
 2. **Probar** Agent Teams nativo en SIGA (flag en `settings.local.json`) con una tarea real de 2-3
