@@ -192,6 +192,33 @@ luego y te encuentras el trabajo hecho.
 - ❌ Para **una sola tarea** o algo urgente que quieres ver al momento: usa `/orquestar` normal.
 - ❌ Cuando estás haciendo algo **delicado o experimental** que prefieres vigilar paso a paso.
 
+> **La regla rápida:** ¿muchas tareas pendientes y te vas a despreocupar un rato? → modo en bucle.
+> ¿una cosa concreta que quieres ver ya? → `/orquestar` normal.
+
+### Un ejemplo de principio a fin
+Es viernes a las 13:30. Antes de ir a comer has ido apuntando seis cosas sueltas en el buzón a lo
+largo de la mañana: *"el botón de exportar recibos no filtra por fecha"*, *"falta el aviso de email
+duplicado en altas"*, *"el listado de socios no ordena por antigüedad"*, y tres más. Son tareas
+independientes, de varias áreas, ninguna urgente. En vez de quedarte despachándolas una a una,
+escribes:
+
+```
+/loop /orquestar-loop
+```
+
+Te vas a comer. Mientras tanto, el equipo:
+
+1. mira las bandejas y ve esas seis tareas repartidas por áreas (económico, miembros…);
+2. lanza un trabajador por cada área con tareas, **todos a la vez**, y van resolviéndolas;
+3. cuando una ronda termina, vuelve a mirar por si quedan más y repite;
+4. al llegar al punto de **juntar el trabajo de todos** (que es lo delicado), **se detiene y deja
+   una nota pidiéndote permiso** en lugar de hacerlo por su cuenta;
+5. cuando ya no quedan tareas pendientes, **se apaga**.
+
+Vuelves a las 15:00 y te encuentras las seis tareas resueltas, cada una en su sitio, y un aviso de
+"listo para juntar e integrar, ¿le doy?". Tú revisas y das el OK. **Has producido una tarde de
+trabajo del equipo sin estar delante.**
+
 ### Tranquilidad: nunca toca lo irreversible sin avisarte
 El bucle automatiza la parte **segura** (que cada agente avance sus tareas en su propia copia de
 trabajo; eso siempre se puede deshacer). Pero la parte **delicada** —juntar el trabajo de todos,
