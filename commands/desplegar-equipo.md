@@ -33,6 +33,8 @@ Por cada unidad con `repo != "self"` (cross-repo, **gestión externa en v1**):
 Renderiza `.claude/kit/templates/PROTOCOLO.md.tmpl` rellenando los huecos con el contrato:
 - tabla de ownership (unidades → globs), lista de zonas calientes, roles, reglas duras (migraciones
   solo integrador, un solo stack dev), flags de runtime activos.
+- **Límites de WIP (§7):** rellena `{{WIP_GLOBAL}}` con `runtime.wip.global` (default 4 si falta) y
+  `{{WIP_POR_UNIDAD}}` con `runtime.wip.por_unidad` (default 1 si falta).
 Escríbelo en `.claude/PROTOCOLO_MULTIAGENTE.md`. Este es el §2/§3 que en otros proyectos se teclea
 a mano: aquí sale **derivado** del análisis.
 

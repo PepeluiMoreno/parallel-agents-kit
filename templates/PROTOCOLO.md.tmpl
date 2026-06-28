@@ -4,6 +4,12 @@
 > Claude Code) sobre este repo sin pisarse. Generado por el kit a partir de `particion.json`.
 > Si lo editas a mano, hazlo también en el contrato para que un re-despliegue no lo pise.
 
+**Metodología: Kanban continuo.** Este equipo no trabaja por sprints. El trabajo **fluye** por una
+cola permanente (las bandejas) priorizada; cada unidad **tira** (pull) de su bandeja, no se le
+empuja. Estados explícitos `[ABIERTO] → [EN CURSO] → [HECHO]`. No hay cajas temporales ni "fin de
+iteración": el "release" de una funcionalidad es cruzar sus criterios de aceptación en `/aceptar`.
+Para que el flujo no se atasque ni se dispare, se limita el trabajo en curso (WIP, §7).
+
 ## 0. Lo primero al arrancar
 1. Averigua quién eres: lee `.claude/AGENTE.local.md`. Te dice tu `ROL`
    (`unidad` | `integrador` | `buzon`) y, si eres de unidad, tu `UNIDAD`.
@@ -63,6 +69,15 @@ remoto recibe la base ya integrada y limpia.
 - Loop: **{{RUNTIME_LOOP}}** (off / freno = para antes de mergear-migrar / pleno = desatendido).
 - Triaje desde subagentes: **{{RUNTIME_TRIAJE_SUB}}** (si on, un subagente deriva trabajo de otra
   unidad a su bandeja en vez de invadirla).
+- **Límite de WIP (Kanban):**
+  - **Global = {{WIP_GLOBAL}}** unidades/subagentes en paralelo por ronda. Si hay más unidades con
+    `[ABIERTO]`, el orquestador sirve las {{WIP_GLOBAL}} de mayor prioridad y el resto espera a la
+    ronda siguiente. Es el dial coste↔riesgo: más agentes = más gasto (lineal) y más cola de
+    integración.
+  - **Por unidad = {{WIP_POR_UNIDAD}}** tarea(s) `[EN CURSO]` a la vez. Con el default 1: una unidad
+    no empieza una tarea nueva hasta cerrar la que tiene. Termina antes de empezar; así el cuello de
+    botella se ve, en vez de esconderse tras tres tareas a medias. (Una unidad puede tener su propio
+    `wip` en el contrato.)
 
 ## 8. El buzón y las bandejas (`.claude/inbox/`)
 El usuario reporta de forma desordenada al chat buzón; `/peticion` clasifica por unidad y escribe un
