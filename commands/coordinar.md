@@ -31,9 +31,14 @@ ventana por cada worktree.
 3. **Decide el work-list.** `git worktree list` y, por cada unidad `self`, lee su bandeja
    `.claude/inbox/<unidad>.md` (ya incluye lo recién encaminado); reúne las entradas `[ABIERTO]`.
    Unidad sin tareas → no se lanza. Si el usuario dio tareas directas, úsalas (y encólalas si no
-   estaban).
+   estaban). **Aplica el WIP por unidad** (`runtime.wip.por_unidad`, o el `wip` propio de la unidad;
+   default 1): a cada unidad le asignas en esta ronda como mucho ese nº de tareas, y no le lanzas
+   nada si ya tiene una `[EN CURSO]` sin cerrar. Termina antes de empezar.
 4. **Lanza un subagente por unidad con trabajo, EN PARALELO** (todas las llamadas Agent en un solo
-   mensaje). Para cada unidad `<U>` con worktree en `<base_worktrees>/<U>`:
+   mensaje), **hasta el límite de WIP global** (`runtime.wip.global`, default 4). Si hay más unidades
+   con `[ABIERTO]` que ese límite, lanza solo las `wip.global` de mayor prioridad y deja el resto en
+   cola para la ronda siguiente (anótalo al usuario). Es el dial coste↔riesgo: no abanicas 8 agentes
+   porque puedas. Para cada unidad `<U>` con worktree en `<base_worktrees>/<U>`:
    - `subagent_type: "claude"`, `description: "unidad <U>"`.
    - **NO** uses `isolation: "worktree"`: el worktree YA existe; el subagente trabaja directamente
      ahí. Crear uno nuevo duplicaría la rama.
