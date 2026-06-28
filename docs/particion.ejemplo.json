@@ -50,6 +50,10 @@
   "runtime": {
     "modo": "ambos",
     "loop": "freno",
-    "triaje_desde_subagentes": true
+    "triaje_desde_subagentes": true,
+    "wip": {
+      "global": 4,
+      "por_unidad": 1
+    }
   }
 }
