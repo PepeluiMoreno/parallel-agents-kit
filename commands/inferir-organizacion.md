@@ -50,8 +50,9 @@ toca *casi todo* el proyecto y que provocan conflicto si dos agentes los editan 
 - Si un fichero lo posee una unidad pero su *registro* es global (p.ej. un resolver que se agrega
   a un schema raíz), ponlo en `resolvers` de esa unidad: lo edita ella, el cableado lo pide.
 - Roles transversales: incluye siempre `integrador`; añade `buzon` salvo que el usuario no lo quiera.
-- `runtime`: por defecto `modo: "ambos"`, `loop: "off"`, `triaje_desde_subagentes: false`. Solo
-  cambia esto si el usuario lo pide.
+- `runtime`: por defecto `modo: "ambos"`, `loop: "off"`, `triaje_desde_subagentes: false`, y
+  `wip: { global: 4, por_unidad: 1 }` (Kanban continuo: ~4 agentes en paralelo, una tarea en curso
+  por unidad). Solo cambia esto si el usuario lo pide.
 
 ## Paso 4 — Proponer y VALIDAR (no desplegar)
 1. Escribe el borrador en `.claude/kit/particion.json` conforme al schema.

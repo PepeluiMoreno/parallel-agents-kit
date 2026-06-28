@@ -5,6 +5,12 @@ Claude Code trabajan en paralelo sin pisarse**, coordinados por un integrador y 
 buzón. Lo que en un proyecto se teclea a mano (qué posee cada agente, qué es zona caliente), aquí
 lo **infiere un agente arquitecto** analizando la estructura del proyecto, y lo despliega solo.
 
+**Metodología: Kanban continuo.** El equipo virtual opera por flujo, no por sprints. El trabajo
+entra en una cola priorizada (las bandejas), cada unidad **tira** de la suya, y un **límite de WIP**
+acota cuánto corre a la vez —que en un equipo de agentes es control directo de coste y de cuellos de
+botella—. El "release" de una funcionalidad es cruzar sus criterios de aceptación, no el fin de una
+iteración.
+
 ## La idea en una frase
 Un **arquitecto** analiza tus carpetas/módulos → propone una **partición** del trabajo (un agente
 por unidad, con ficheros disjuntos) → tú la validas → se **despliega** el scaffolding (worktrees,
