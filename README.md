@@ -48,7 +48,9 @@ normal, fuera del fan-out de worktrees).
 | Comando | Rol | Qué hace |
 |---|---|---|
 | `/inferir-organizacion` | arquitecto | Escanea la estructura, infiere la partición, la propone para validar |
+| `/reinferir` | arquitecto | Compara la partición vigente con el repo actual y propone un parche para resincronizarla |
 | `/desplegar-equipo` | desplegador | Materializa worktrees, protocolo, bandejas desde el contrato |
+| `/emitir-nativo` | arquitecto | Traduce la partición a config nativa de Claude Code (subagents `isolation: worktree` + hooks) en vez del motor propio |
 | `/coordinar` | integrador | Modo 1-ventana: lanza un subagente por unidad y luego integra |
 | `/coordinar-bucle` | integrador | Modo desatendido **freno**: drena bandejas en bucle, PARA antes de mergear/migrar. Úsalo con `/loop /coordinar-bucle` |
 | `/inbox` | unidad | Lee su bandeja y trabaja sus tareas (modo N-ventanas) |
@@ -82,3 +84,9 @@ Es a la funcionalidad lo que el buzón es al desarrollo: el **buzón** es reacti
 ## Estado
 v1: un repo principal con worktrees; cross-repo modelado pero gestionado como "externo". Loop
 (off/freno/pleno) y triaje-desde-subagentes disponibles como flags de `runtime` en el contrato.
+
+**Pivote a nativo (en curso):** Claude Code ya trae de serie el núcleo de orquestación (subagents
+con `isolation: worktree`, hooks como gate, agent teams). El kit conserva sólo su diferencial real
+—el arquitecto que infiere la partición y la capa de producto— y, con `/emitir-nativo`, genera la
+maquinaria de orquestación como config nativa desde el mismo `particion.json`. Detalle y razones en
+`docs/COMPARATIVA_AGENT_TEAMS.md` y `docs/ARQUITECTURA_pivote_nativo.md`.
