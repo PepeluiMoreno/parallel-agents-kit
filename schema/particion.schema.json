@@ -66,6 +66,11 @@
             "type": "array",
             "items": { "type": "string" },
             "description": "Opcional. Ficheros que la unidad posee pero cuyo REGISTRO global es zona caliente (p.ej. resolvers que se agregan a un schema raíz). El fichero lo edita la unidad; el cableado lo pide al integrador."
+          },
+          "wip": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Opcional. Override del límite runtime.wip.por_unidad SOLO para esta unidad (p.ej. una unidad que rinde mejor con 2 tareas a la vez). Si se omite, aplica el global."
           }
         }
       }
@@ -113,6 +118,25 @@
           "type": "boolean",
           "default": false,
           "description": "Si true, un subagente que detecte trabajo de OTRA unidad puede dejarlo en la bandeja de la unidad dueña (vía /peticion) en vez de invadirla."
+        },
+        "wip": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Límites de Work In Progress. El kit opera bajo KANBAN CONTINUO: no hay sprints; el trabajo fluye por la cola y se limita cuánto está EN CURSO a la vez. En un equipo de agentes el WIP no es higiene de proceso, es control directo de coste, de riesgo de merge y de cuellos de botella.",
+          "properties": {
+            "global": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 4,
+              "description": "Máximo de unidades/subagentes en paralelo por ronda. Dial paralelismo↔coste↔riesgo: el coste es lineal con el nº de agentes (sweet spot 3-5). Si hay más unidades con trabajo, se sirven por prioridad y el resto espera a la ronda siguiente."
+            },
+            "por_unidad": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "description": "Máximo de tareas [EN CURSO] por unidad a la vez. 1 = terminar antes de empezar (la regla Kanban que expone cuellos de botella y evita tareas a medias). Una unidad puede sobreescribirlo con su campo 'wip'."
+            }
+          }
         }
       }
     }
