@@ -31,9 +31,19 @@ autorización en la ficha:
    deja que lo corrija.
 3. **UI.** Describe (o esboza en texto/ASCII) cómo se ve y se usa. Valida con él.
 4. **Reglas de negocio.** Validaciones, permisos, casos límite, estados. Confírmalas.
-5. **Criterios de aceptación.** Redacta una lista verificable de "esto está hecho cuando…".
+5. **Criterios de aceptación.** Redacta una lista verificable de "esto está hecho cuando…". Cada
+   criterio debe ser **evaluable programáticamente** siempre que se pueda (un test, una consulta, un
+   estado observable), no una impresión subjetiva. Son los que `/aceptar` contrastará uno a uno.
 6. **Descomposición.** Parte la funcionalidad en tareas **por unidad** (usando el ownership §2).
-   **Enséñale la lista de tareas ANTES de encolar** y pide el OK final.
+   **Aplica el test SPEC a cada tarea ANTES de encolarla** —si no lo pasa, reescríbela o pártela; no
+   encoles tareas mal definidas (es la causa nº1 de agentes que acaban a tiempos dispares y de merges
+   conflictivos). Una tarea es válida si es:
+   - **S**específica: dice qué construir y dónde, sin ambigüedad.
+   - **P**rogramáticamente evaluable: su "hecho" se puede comprobar (test/consulta/estado), no "a ojo".
+   - **E**xplícita en alcance: lista lo que entra y, si hace falta, lo que NO.
+   - **C**otada: cabe en una unidad y en un esfuerzo razonable; si es enorme, pártela.
+
+   **Enséñale la lista de tareas (ya filtrada) ANTES de encolar** y pide el OK final.
 
 ## Encolado (solo con OK final)
 Por cada tarea, añade un bloque `[ABIERTO]` a `.claude/inbox/<unidad>.md` con **especificación
