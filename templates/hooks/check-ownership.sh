@@ -16,13 +16,19 @@
 #   - exit 0  → permite.
 #   - exit 2  → bloquea y devuelve el stderr al modelo como motivo.
 
-set -euo pipefail
+# FASE FAIL-OPEN (sin `set -e`): un hook nunca debe romper una sesión legítima. Si falta una
+# dependencia (jq, git) o el contrato, salimos 0 ANTES de activar el modo estricto, para que un
+# fallo de entorno no se convierta en un exit ≠ 0 que bloquee toda escritura del agente.
+set -uo pipefail
+command -v jq  >/dev/null 2>&1 || exit 0
+command -v git >/dev/null 2>&1 || exit 0
+git rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
 
 PARTICION="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null)}/.claude/kit/particion.json"
-
-# Sin contrato o sin jq → no bloqueamos (fail-open: el hook nunca debe romper una sesión legítima).
-command -v jq >/dev/null 2>&1 || exit 0
 [[ -f "$PARTICION" ]] || exit 0
+
+# A partir de aquí ya tenemos jq + git + repo + contrato: podemos exigir rigor.
+set -e
 
 # 1. Unidad activa = sufijo de la rama feature/<unidad>. El integrador (rama base) no se filtra aquí:
 #    él SÍ puede tocar zonas calientes; este hook solo confina a las unidades.
