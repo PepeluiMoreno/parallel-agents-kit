@@ -1,3 +1,5 @@
 .claude/particion.json
 *.local.md
 __pycache__/
+docs/manual/*.pdf
+*.bundle

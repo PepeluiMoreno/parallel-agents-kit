@@ -49,6 +49,13 @@ evita choques.
 central de la API, las migraciones de la base de datos, los componentes comunes). Si dos agentes
 los editan a la vez → choque garantizado. Por eso tienen **un dueño único: el jefe**.
 
+**Migración (cambio de base de datos).** Caso especial de zona caliente. Una migración no es un
+fichero suelto: es un eslabón de una cadena (cada una parte de la anterior). Si dos unidades crean
+una migración a la vez, la cadena se bifurca y la base de datos se niega a aplicarla. Por eso las
+unidades **no crean migraciones**: solo describen el cambio de modelo en su parcela, y el **jefe**
+genera **una sola migración** sobre el resultado ya unido. Así nunca hay cadenas que reconciliar a
+mano. (Ver apartado 9.)
+
 **Agente vs. subagente.** Un *agente* es un chat de Claude Code. Un *subagente* es un agente que
 **otro agente lanza por debajo**. Esta distinción es la clave de la comodidad: en vez de que **tú**
 abras una ventana por sala, **un solo chat** (el jefe) lanza un subagente por unidad. Una ventana,
@@ -73,7 +80,7 @@ secretaría), un solo chat de por medio, y el resultado integrado al final.
 
 @@SVG@@
 
-**Cómo se lee:** tú escribes `/orquestar` en **una sola ventana**. Ese chat (el jefe) mira las
+**Cómo se lee:** tú escribes `/coordinar` en **una sola ventana**. Ese chat (el jefe) mira las
 bandejas, lanza **un subagente por unidad con trabajo**, todos en paralelo y cada uno en su
 worktree. Cuando vuelven, **el mismo chat** fusiona las ramas, cablea las zonas calientes, aplica
 las migraciones una sola vez y valida. Lo que sale es la rama principal **integrada y limpia** —
@@ -110,7 +117,7 @@ kit —schema y plantillas— a `.claude/kit/`. Si el destino no es un repo git,
 > del repo abierto —falta correr `install.sh`—, o (2) sí están pero el chat se abrió antes de
 > instalarlos: **recarga la sesión** y aparecerán.
 
-Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/analizar-proyecto`.
+Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/inferir-organizacion`.
 
 ---
 
@@ -120,15 +127,17 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 
 | Comando | Quién lo usa | Qué hace |
 |---|---|---|
-| `/analizar-proyecto` | el arquitecto | Escanea la estructura del proyecto y **propone** cómo repartirlo en unidades. No despliega: espera tu visto bueno. |
+| `/inferir-organizacion` | el arquitecto | Escanea la estructura del proyecto y **propone** cómo repartirlo en unidades. No despliega: espera tu visto bueno. |
+| `/reinferir` | el arquitecto | **Resincroniza** el reparto con el repo cuando este se ha movido (módulos nuevos, carpetas renombradas, código sin dueño). Propone un parche; no toca nada sin tu OK. Ver apartado 10. |
 | `/desplegar-equipo` | el arquitecto | Con tu reparto aprobado, **monta** todo: worktrees, protocolo, bandejas, comandos. |
-| `/orquestar` | el jefe | **Modo 1 ventana.** Lanza un subagente por unidad con tareas y luego integra. |
-| `/orquestar-loop` | el jefe | **Modo en bucle (desatendido).** Va resolviendo las tareas pendientes solo, sin que relances; **te pide permiso** antes de juntar el trabajo o migrar. Se usa con `/loop`. Ver apartado 8. |
+| `/emitir-nativo` | el arquitecto | **(Avanzado)** Traduce el reparto a configuración **nativa** de Claude Code (subagentes + hooks) para que el aislamiento y la propiedad los imponga la herramienta, no la disciplina del prompt. Ver apartado 11. |
+| `/coordinar` | el jefe | **Modo 1 ventana.** Lanza un subagente por unidad con tareas y luego integra. |
+| `/coordinar-bucle` | el jefe | **Modo en bucle (desatendido).** Va resolviendo las tareas pendientes solo, sin que relances; **te pide permiso** antes de juntar el trabajo o migrar. Se usa con `/loop`. Ver apartado 8. |
 | `/inbox` | un agente de unidad | Lee su bandeja y se pone a trabajar sus tareas (modo "una ventana por unidad"). |
-| `/pedir-cableado` | un agente de unidad | Cuando necesita una zona caliente, **no la toca**: deja la petición al jefe. |
-| `/integrar` | el jefe | Fusiona las ramas listas, aplica los cableados pedidos y las migraciones. |
-| `/triaje` | el buzón | Clasifica una nota tuya y la **encola** en la bandeja de la unidad correcta. |
-| `/producto` | el responsable de producto | **Propone** funcionalidad, la **diseña contigo** paso a paso y, con tu OK, la descompone en tareas y las encola. Ver apartado 7. |
+| `/solicitar-integracion` | un agente de unidad | Cuando necesita una zona caliente, **no la toca**: deja la petición al jefe. |
+| `/aplicar-integracion` | el jefe | Fusiona las ramas listas, aplica los cableados pedidos y **redacta y aplica** la migración única. |
+| `/peticion` | el buzón | Clasifica una nota tuya y la **encola** en la bandeja de la unidad correcta. |
+| `/productor` | el responsable de producto | **Propone** funcionalidad, la **diseña contigo** paso a paso y, con tu OK, la descompone en tareas y las encola. Ver apartado 7. |
 | `/aceptar` | el responsable de producto | Comprueba que una funcionalidad terminada **cumple lo acordado** y te lo resume para tu visto bueno. |
 
 ---
@@ -138,7 +147,7 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 **Puesta en marcha (una sola vez por proyecto):**
 
 ```
-1.  /analizar-proyecto      → el arquitecto propone el reparto en unidades
+1.  /inferir-organizacion   → el arquitecto propone el reparto en unidades
 2.  (revisas y ajustas el reparto)
 3.  /desplegar-equipo       → se monta todo el andamiaje
 ```
@@ -146,7 +155,7 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 **Diseñar funcionalidad nueva (cuando quieres construir algo, no arreglar):**
 
 ```
-/producto                  → el responsable de producto propone y diseña contigo;
+/productor                 → el responsable de producto propone y diseña contigo;
                              con tu OK, encola las tareas para el equipo
 /aceptar                   → cuando esté hecho, valida que cumple lo acordado
 ```
@@ -154,16 +163,16 @@ Hecho esto, ya puedes usar la secuencia del apartado siguiente, empezando por `/
 **El día a día (bugs y mejoras sueltas):**
 
 ```
-"eres el buzón, /triaje: <tu queja tal cual>"     → encola la tarea
+"eres el buzón, /peticion: <tu queja tal cual>"   → encola la tarea
         (puedes soltar varias quejas seguidas; el buzón las reparte)
-/orquestar                 → el jefe lanza los subagentes y luego integra
+/coordinar                 → el jefe lanza los subagentes y luego integra
 (cuando quieras subir)     "sube la rama principal a GitHub"
 ```
 
 **Dejarlo trabajando solo (cuando tienes varias tareas y vas a estar a otra cosa):**
 
 ```
-/loop /orquestar-loop       → va resolviendo las tareas pendientes solo;
+/loop /coordinar-bucle      → va resolviendo las tareas pendientes solo;
                               te pide permiso antes de juntar el trabajo o migrar;
                               se apaga solo cuando no queda nada. (Ver apartado 8.)
 ```
@@ -188,15 +197,25 @@ principio) y **te propone funcionalidades** que cree que faltan. A partir de ah�
 2. **Alcance y flujos:** qué entra, qué no, y cómo es el proceso paso a paso. → lo validas.
 3. **UI:** cómo se ve y se usa. → lo validas.
 4. **Reglas de negocio:** validaciones, permisos, casos límite. → las confirmas.
-5. **Criterios de aceptación:** la lista de "esto está hecho cuando…".
+5. **Criterios de aceptación:** la lista de "esto está hecho cuando…", **redactada para poder
+   comprobarse sola** (un test, una consulta, un estado observable), no "a ojo". Son los mismos que
+   `/aceptar` contrastará uno a uno al final.
 6. **Descompone** la funcionalidad en tareas (una por área) y **te las enseña antes de encolar**.
 
+> **El filtro de calidad de las tareas (test SPEC).** Antes de encolar nada, el responsable pasa
+> cada tarea por cuatro criterios y **no la mete en la bandeja si falla alguno** (la reescribe o la
+> parte). Una tarea válida es **S**pecífica (dice qué construir y dónde, sin ambigüedad),
+> **P**rogramáticamente evaluable (su "hecho" se puede comprobar), **E**xplícita en alcance (lista
+> lo que entra y, si hace falta, lo que no) y a**C**otada (cabe en una unidad y un esfuerzo
+> razonable). Filtrar aquí evita la causa nº1 de problemas: tareas mal definidas que hacen que los
+> agentes acaben a tiempos dispares y choquen al juntar el trabajo.
+
 Solo con tu **OK final**, escribe esas tareas en las bandejas —con todo el detalle: flujo, UI,
-reglas y criterios— y el equipo de desarrollo se pone (`/orquestar`). Cuando terminan, el propio
+reglas y criterios— y el equipo de desarrollo se pone (`/coordinar`). Cuando terminan, el propio
 responsable **comprueba que lo entregado cumple lo acordado** y te lo resume para tu visto bueno.
 
 ### Dónde encaja
-Llevas el diálogo con el comando `/producto`; la validación final, con `/aceptar`. Todo lo decidido
+Llevas el diálogo con el comando `/productor`; la validación final, con `/aceptar`. Todo lo decidido
 queda guardado en un **backlog de producto** (una ficha por funcionalidad, con su estado), para que
 nada se pierda entre sesiones y veas siempre qué hay propuesto, aprobado o en marcha.
 
@@ -209,19 +228,19 @@ nada se pierda entre sesiones y veas siempre qué hay propuesto, aprobado o en m
 ## 8 · Trabajar desatendido: el modo en bucle
 
 ### ¿Qué es?
-Normalmente tú disparas el trabajo: escribes `/orquestar` y el equipo hace una ronda. El **modo en
+Normalmente tú disparas el trabajo: escribes `/coordinar` y el equipo hace una ronda. El **modo en
 bucle** es lo mismo pero **repitiéndose solo**: el equipo va mirando las tareas pendientes y las va
 sacando **sin que tú tengas que relanzar nada**, hasta que no queda ninguna. Entonces se apaga.
 
 Se activa así:
 
 ```
-/loop /orquestar-loop
+/loop /coordinar-bucle
 ```
 
 ### ¿Para qué sirve?
 Para que el proyecto **avance solo mientras tú haces otra cosa**. En vez de estar pendiente de
-escribir `/orquestar` cada rato, vas soltando peticiones al buzón cuando se te ocurren —por la
+escribir `/coordinar` cada rato, vas soltando peticiones al buzón cuando se te ocurren —por la
 mañana, en una reunión, desde el móvil— y el equipo las va resolviendo por su cuenta. Tú llegas
 luego y te encuentras el trabajo hecho.
 
@@ -233,11 +252,11 @@ luego y te encuentras el trabajo hecho.
 - ✅ Cuando las tareas son **independientes y rutinarias**, del tipo "ir despachando el backlog".
 
 ### ¿Cuándo NO?
-- ❌ Para **una sola tarea** o algo urgente que quieres ver al momento: usa `/orquestar` normal.
+- ❌ Para **una sola tarea** o algo urgente que quieres ver al momento: usa `/coordinar` normal.
 - ❌ Cuando estás haciendo algo **delicado o experimental** que prefieres vigilar paso a paso.
 
 > **La regla rápida:** ¿muchas tareas pendientes y te vas a despreocupar un rato? → modo en bucle.
-> ¿una cosa concreta que quieres ver ya? → `/orquestar` normal.
+> ¿una cosa concreta que quieres ver ya? → `/coordinar` normal.
 
 ### Un ejemplo de principio a fin
 Es viernes a las 13:30. Antes de ir a comer has ido apuntando seis cosas sueltas en el buzón a lo
@@ -247,7 +266,7 @@ independientes, de varias áreas, ninguna urgente. En vez de quedarte despachán
 escribes:
 
 ```
-/loop /orquestar-loop
+/loop /coordinar-bucle
 ```
 
 Te vas a comer. Mientras tanto, el equipo:
@@ -277,10 +296,66 @@ no se queda dando vueltas en vano. En resumen: trabaja solo en lo seguro, te lla
 1. **Un fichero, un dueño.** Cada unidad edita lo suyo; el jefe, las zonas calientes. Nadie toca lo
    que no posee. Si una tarea cruza fronteras, se **deriva** a la bandeja de la unidad dueña (no se
    invade).
-2. **Solo el jefe fusiona y migra.** La base de datos es una y compartida: si varios migran a la
-   vez, se rompe. Por eso esa parte está centralizada y supervisada.
+2. **Solo el jefe fusiona y migra; las unidades ni siquiera crean la migración.** La base de datos
+   es una y compartida. Las unidades commitean solo el **modelo** (cómo quieren que queden los
+   datos) en su rama; el jefe, una vez unido todo el trabajo, **redacta una sola migración** sobre
+   ese resultado y la aplica una vez. Así la cadena de cambios de BD nunca se bifurca y no hay nada
+   que reconciliar a mano.
 3. **A GitHub solo sube la rama principal, y solo cuando tú lo pides.** Las ramas de trabajo son
    carriles desechables que viven en tu máquina.
+
+---
+
+## 10 · Cuando el proyecto cambia: resincronizar el reparto
+
+El reparto en unidades se calcula **una vez** (`/inferir-organizacion`), pero el código no se queda
+quieto: añades un módulo, renombras una carpeta, mueves ficheros de sitio. Cuando eso pasa, el mapa
+de propiedad **miente en silencio**: hay código nuevo que ningún agente posee, parcelas que apuntan
+a carpetas que ya no existen, o dos unidades que de pronto reclaman el mismo fichero. Trabajar así
+es la receta para que dos agentes choquen sin que nadie lo haya declarado.
+
+Para eso está `/reinferir`. El arquitecto compara el reparto vigente con el estado **real** del repo
+y te presenta un **informe de deriva** ordenado por gravedad:
+
+- 🔴 **código sin dueño** y **solapamientos** (rompen el modelo: hay que repartirlos),
+- 🟡 **parcelas que ya no apuntan a nada** y **zonas calientes nuevas** sin declarar,
+- 🟢 sugerencias mayores (un módulo nuevo entero que pide su propia unidad, una unidad que se vació).
+
+Te propone el reparto corregido **y te enseña exactamente qué cambia** antes de tocar nada. Con tu
+OK, actualiza el reparto; si cambió la propiedad de algún fichero, te recuerda volver a montar el
+andamiaje con `/desplegar-equipo`. Si no hay deriva, te lo dice y no toca nada.
+
+> **Cuándo usarlo:** cada vez que el repo se haya movido de forma apreciable desde el último
+> reparto —antes de lanzar una tanda de trabajo grande— para que los agentes no escriban contra un
+> mapa caducado.
+
+---
+
+## 11 · (Avanzado) Apoyarse en lo que Claude Code ya trae: el modo nativo
+
+Todo lo anterior funciona con un motor que el propio kit implementa (las bandejas, el reparto de
+notas, `/coordinar`). Pero Claude Code ha ido incorporando de serie buena parte de esa maquinaria:
+subagentes que trabajan **cada uno en su copia aislada** del repo, y *hooks* (ganchos automáticos)
+que pueden **bloquear** una acción antes de que ocurra. El modo nativo aprovecha eso.
+
+`/emitir-nativo` traduce tu reparto a **configuración nativa de Claude Code**: genera un subagente
+por unidad (cada uno aislado en su worktree) y un *hook* de propiedad que **impide** que un agente
+escriba fuera de su parcela. La diferencia es de garantía: hasta ahora "no toques lo que no es tuyo"
+era una **instrucción** que el agente podía saltarse; con el hook es un **muro** —la escritura
+simplemente no sucede.
+
+Qué se conserva y qué se jubila al pasar a nativo:
+
+- **Se conserva** (no hay equivalente nativo): el arquitecto que infiere y resincroniza el reparto
+  (`/inferir-organizacion`, `/reinferir`) y toda la capa de producto (`/productor`, `/aceptar`).
+- **Se jubila** (lo da Claude Code de serie): el motor de bandejas y `/coordinar`. `/emitir-nativo`
+  **no borra nada**: lo marca como "heredado" y tú decides cuándo retirarlo.
+
+> **Es una opción avanzada y aún en movimiento.** La parte estable hoy son los subagentes aislados +
+> hooks. Otras piezas (equipos de agentes con buzón nativo) siguen siendo experimentales. Por eso
+> `/emitir-nativo` **propone** la configuración para que la valides, y no apaga el motor clásico:
+> conviven hasta que decidas dar el salto. Si no necesitas esto, ignora el apartado: el flujo de los
+> apartados 1–10 es completo por sí mismo.
 """
 
 # ---------- CSS de impresión ----------
@@ -371,6 +446,7 @@ COVER = r"""
     <span class="badge">integrador &middot; buzón</span>
     <span class="badge">desde una sola ventana</span>
     <span class="badge">modo en bucle</span>
+    <span class="badge">modo nativo (hooks)</span>
   </div>
   <div class="foot">Proyecto SIGA &middot; generado con WeasyPrint</div>
 </div>
