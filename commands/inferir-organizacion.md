@@ -37,7 +37,9 @@ Explora sin asumir un framework concreto. Pistas genéricas:
 Marca como **zona caliente** (dueño = integrador, nadie más las edita) los ficheros que importa o
 toca *casi todo* el proyecto y que provocan conflicto si dos agentes los editan a la vez:
 - routers/índices de rutas raíz, schema/registro raíz de API (GraphQL/REST agregador),
-- migraciones de BD (y la regla: **solo el integrador aplica migraciones**),
+- migraciones de BD: el **directorio de versiones** (alembic/versions, prisma/migrations…) es zona
+  caliente **de escritura**, no solo de aplicación (la regla: **solo el integrador redacta y aplica
+  migraciones**; las unidades aportan modelos). Ver `docs/ADR-migraciones-zona-caliente.md`.
 - design system / componentes comunes compartidos,
 - config global, stores globales de auth, event bus, base model/ORM base,
 - ficheros de "registro de plugins/catálogos" que todos los módulos tocan.

@@ -21,11 +21,13 @@ ventana por cada worktree.
      (tú tienes el mapa completo; el emisor puede no tenerlo),
    - copia la petición como `[ABIERTO]` en `.claude/inbox/<unidad-dueña>.md`,
    - marca la entrada original `[ENCAMINADO → <unidad>]`.
-   Si una petición es de zona caliente pura (router/schema raíz, aplicar migración…), va a
-   `integrador.md`, no a una unidad. **Caso típico: una migración.** Si la unidad X necesita tablas
-   nuevas cuyo modelo vive en otra unidad (p.ej. `core`/modelos), la petición se encamina a esa
-   unidad dueña del modelo: ella diseña el modelo y **crea** la migración (sin aplicarla); el
-   integrador la **aplica** al integrar.
+   Si una petición es de zona caliente pura (router/schema raíz, redactar/aplicar migración…), va a
+   `integrador.md`, no a una unidad. **Caso típico: un cambio de esquema.** Si la unidad X necesita
+   tablas nuevas cuyo modelo vive en otra unidad (p.ej. `core`/modelos), la petición se encamina a
+   esa unidad dueña del modelo: ella diseña y commitea el **modelo** en su rama y deja una petición
+   de cableado describiendo el cambio de esquema. **La migración la redacta y aplica SOLO el
+   integrador**, una única vez al integrar, para no acabar con dos heads de Alembic en paralelo (ver
+   `docs/ADR-migraciones-zona-caliente.md`).
 3. **Decide el work-list.** `git worktree list` y, por cada unidad `self`, lee su bandeja
    `.claude/inbox/<unidad>.md` (ya incluye lo recién encaminado); reúne las entradas `[ABIERTO]`.
    Unidad sin tareas → no se lanza. Si el usuario dio tareas directas, úsalas (y encólalas si no
@@ -46,7 +48,10 @@ ventana por cada worktree.
      - Edita SOLO ficheros de tu unidad (ownership). Si un cambio cae fuera, NO lo hagas.
      - NO edites zonas calientes. Si necesitas una, deja tu parte creada en tu rama y AÑADE un
        bloque [PENDIENTE] a <raiz>/.claude/inbox/integrador.md (formato en inbox/_README.md).
-     - PUEDES crear migraciones pero NO aplicarlas. NO mergees. NO arranques tu propio stack.
+     - NO crees migraciones. Si tu cambio toca el esquema (tablas/campos/índices nuevos), deja el
+       MODELO commiteado en tu rama y solicita al integrador, vía bloque [PENDIENTE] en
+       integrador.md, que redacte la migración (es zona caliente de escritura: redactarla en
+       paralelo produce heads divergentes de Alembic). NO mergees. NO arranques tu propio stack.
      - Commitea en tu rama con `tipo(<U>): descripción` + el cierre de commit del repo.
      - Al terminar cada tarea, márcala [HECHO] en .claude/inbox/<U>.md con el hash y una línea.
      - [TRIAJE DESDE SUBAGENTES, si runtime.triaje_desde_subagentes==true] Si tu tarea requiere
@@ -56,7 +61,8 @@ ventana por cada worktree.
        la siguiente ronda. Si lo sabes con certeza, puedes sugerir destinatario, pero no es
        obligatorio. Caso típico: necesitas tablas/campos nuevos cuyo MODELO vive en otra unidad
        (p.ej. core) → deja la petición describiendo las tablas/campos; la unidad dueña del modelo
-       creará el modelo y la migración. Tú NO creas modelos ni migraciones de otra unidad.
+       creará el MODELO. La migración la redactará el integrador. Tú NO creas modelos de otra unidad
+       ni migraciones de ninguna.
 
      TUS TAREAS:
      <pega las entradas [ABIERTO] de su bandeja, o la tarea directa del usuario>
@@ -68,7 +74,7 @@ ventana por cada worktree.
    en `_peticiones.md`, anótalo: se encaminarán en la próxima ronda (o, si quieres cerrarlas ya,
    vuelve al paso 2 y lanza otra ronda para las unidades recién encargadas).
 6. **Integra (tú, como siempre):** `/aplicar-integracion` — mergea ramas, aplica cableados de integrador.md,
-   reconcilia y aplica migraciones una sola vez, valida el stack.
+   reconcilia, redacta y aplica la migración una sola vez, valida el stack.
 
 ## Por qué es seguro
 Cada subagente queda confinado a su worktree y a su ownership → no se pisan. Solo tú tocas zonas

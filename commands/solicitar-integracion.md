@@ -10,7 +10,9 @@ NO edites la zona caliente. En su lugar:
 
 1. Lee `.claude/AGENTE.local.md` para tu `UNIDAD`, y `git rev-parse --abbrev-ref HEAD` para tu rama.
 2. Asegúrate de que TU parte ya está hecha y commiteada en tu rama (la vista, el resolver, el
-   modelo, la migración generada sin aplicar…). El integrador parte de tu rama.
+   modelo…). Si tu cambio toca el esquema, commitea el **modelo** pero NO la migración: la redacta
+   el integrador sobre el estado ya integrado (zona caliente de escritura). El integrador parte de
+   tu rama.
 3. Añade (append) un bloque a `.claude/inbox/integrador.md` con este formato:
 
    ```markdown

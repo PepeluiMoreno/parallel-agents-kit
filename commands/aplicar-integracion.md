@@ -18,8 +18,13 @@ calientes, mergea y migra. Trabaja con cuidado y de forma supervisada.
    - Aplica los **cableados** que esa rama dejó en `integrador.md` (edita router/schema/registro/
      componentes comunes según el bloque).
    - Marca cada bloque `[PENDIENTE]` → `[CABLEADO]` con el hash del commit de cableado.
-4. **Migraciones (solo aquí):** si alguna rama trajo migraciones:
-   - revisa que haya un solo head; si divergen, reconcilia (merge de migraciones).
+4. **Migraciones (solo aquí — las redactas TÚ):** si alguna rama trajo cambios de esquema (modelos
+   nuevos/modificados):
+   - con todas las ramas ya mergeadas, **redacta una única migración** que cubra el conjunto del
+     cambio de esquema (autogenera contra los modelos ya integrados y revísala). Las unidades NO
+     traen migraciones: traen modelos; tú redactas la migración una sola vez sobre el estado unido.
+   - así no hay heads divergentes que reconciliar. Si por lo que sea llegaran migraciones en una
+     rama, trátalo como excepción: colapsa a un solo head antes de aplicar.
    - aplica UNA sola vez contra la BD compartida.
    - reinicia/valida el backend del stack dev.
 5. **Valida que arranca:** levanta o recarga el stack compartido; comprueba que importa todo sin

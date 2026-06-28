@@ -13,8 +13,8 @@
 ## 1. Roles
 | Rol | Dónde vive | Qué hace | Qué NO hace |
 |---|---|---|---|
-| **Agente de unidad** | worktree `{{base_worktrees}}/<unidad>`, rama `feature/<unidad>` | Trabaja SOLO en los ficheros de su unidad. Commitea en su rama. Pide cableado al integrador para zonas calientes. | No edita zonas calientes. No mergea. No aplica migraciones. |
-| **Integrador** | raíz `{{raiz}}`, rama `{{rama_base}}` | Único que edita zonas calientes, mergea ramas, aplica migraciones y gestiona el stack dev compartido. | No desarrolla features de unidad. |
+| **Agente de unidad** | worktree `{{base_worktrees}}/<unidad>`, rama `feature/<unidad>` | Trabaja SOLO en los ficheros de su unidad. Commitea en su rama. Pide cableado al integrador para zonas calientes. | No edita zonas calientes. No mergea. No crea ni aplica migraciones (commitea el modelo; la migración la redacta el integrador). |
+| **Integrador** | raíz `{{raiz}}`, rama `{{rama_base}}` | Único que edita zonas calientes, mergea ramas, **redacta y aplica** migraciones y gestiona el stack dev compartido. | No desarrolla features de unidad. |
 | **Buzón** | cualquier worktree (no toca código) | Clasifica las notas del usuario por unidad y las encola en `.claude/inbox/`. | No arregla nada. No edita código. |
 
 **Regla de oro:** un fichero tiene **un solo dueño** en cada momento. Las unidades poseen sus
@@ -51,9 +51,10 @@ NO se suben. Solo se hace `git push` de la rama base, y **solo cuando el usuario
 remoto recibe la base ya integrada y limpia.
 
 ## 6. Reglas duras
-- **Una sola BD/stack compartido.** **Solo el integrador aplica migraciones** (un agente puede
-  *crear* una migración en su rama, pero no la aplica). Si dos unidades crean migraciones a la vez,
-  el integrador reconcilia los heads al integrar.
+- **Una sola BD/stack compartido.** **Solo el integrador redacta y aplica migraciones.** Las
+  unidades commitean *modelos* en su rama, nunca migraciones: el directorio de versiones (Alembic/
+  Prisma/…) es **zona caliente de escritura**. El integrador autogenera una única migración sobre
+  el estado ya integrado y la aplica una sola vez → no hay heads divergentes que reconciliar.
 - **Un solo stack dev** corriendo, gestionado por el integrador. No arranques tu propio backend/
   frontend en tu worktree (colisión de puertos/BD).
 
