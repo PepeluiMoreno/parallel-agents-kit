@@ -11,6 +11,7 @@ que conectan al usuario, al buzón y a los agentes. Protocolo completo en
 | `integrador.md` | agentes de unidad (`/request-integration`) | el integrador (`/apply-integration`) |
 | `_peticiones.md` | cualquier agente que detecta trabajo de OTRA unidad | el orquestador (lo encamina en `/pull-tasks`) |
 | `_triage_log.md` | el buzón (auditoría de cada reparto) | quien quiera revisar el histórico |
+| `_progreso.md` | cada subagente de unidad (checkpoints) | **el cliente/usuario**, en vivo (tenlo abierto en el editor) |
 
 Hay una bandeja por unidad: {{LISTA_UNIDADES}}.
 
@@ -78,6 +79,26 @@ ejecutar (`/pull-tasks`) e integrar (`/apply-integration`).
 ```
 El integrador, al arrancar el encargo, cambia `[ENCARGO]` → `[EN CURSO]`; al terminar e integrar,
 → `[ENTREGADO]` + hash de merge. El PO mueve entonces la ficha a `EN DESARROLLO`/`HECHA`.
+
+## Formato del tablero de progreso (→ `_progreso.md`)
+La **pizarra de "por dónde van"**. Cada subagente de unidad escribe aquí un checkpoint al empezar una
+tarea, al cambiar de foco y al cerrarla (se lo instruye `/pull-tasks`). NO es para coordinar —es solo
+para que el usuario observe el avance **sin ver a los agentes por dentro** (Claude Code los hace
+opacos mientras trabajan). Una línea por checkpoint, append-only:
+
+```
+<unidad> · <hora> · INICIO · <tarea, pocas palabras>
+<unidad> · <hora> · CURSO  · <qué va a hacer ahora — su intención>
+<unidad> · <hora> · HECHO  · <tarea> · <hash>
+```
+
+**Cómo verlo latir en VS Code (sin tmux):** abre `_progreso.md` en una pestaña; el editor recarga el
+fichero al cambiar y verás aparecer las líneas según los subagentes avanzan. Es el "tablero de estado"
+equivalente al de agent teams, pero sobre la topología en estrella y sin perder el aislamiento por
+worktree (ver `docs/ADR-topologia-estrella-no-teams.md`). Late por hitos, no es streaming continuo:
+ves *qué tarea* hace cada unidad y cuándo cambia, lo justo para detectar un desvío y cortar la ronda.
+El fichero es efímero/observacional: se puede vaciar entre tandas; el registro permanente es el git
+log y las bandejas.
 
 ## Reglas
 - **Append-only**: nunca borres entradas; cámbiales el estado. El histórico es la auditoría.

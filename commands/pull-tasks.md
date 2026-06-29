@@ -74,6 +74,15 @@ ventana por cada worktree.
        paralelo produce heads divergentes de Alembic). NO mergees. NO arranques tu propio stack.
      - Commitea en tu rama con `tipo(<U>): descripción` + el cierre de commit del repo.
      - Al terminar cada tarea, márcala [HECHO] en .claude/inbox/<U>.md con el hash y una línea.
+     - CHECKPOINTS DE PROGRESO (obligatorio): añade UNA línea (append) a
+       <raiz>/.claude/inbox/_progreso.md en estos tres momentos, para que el usuario sepa por
+       dónde vas sin verte por dentro:
+         · al EMPEZAR una tarea:        `<U> · <hora> · INICIO  · <tarea en pocas palabras>`
+         · al CAMBIAR de subtarea/foco: `<U> · <hora> · CURSO   · <qué vas a hacer ahora>`
+         · al CERRAR una tarea:         `<U> · <hora> · HECHO   · <tarea> · <hash>`
+       Indica tu INTENCIÓN ("voy a tocar X para Y"), no el detalle mecánico. Es una pizarra
+       compartida: NO borres ni edites líneas previas (tuyas o de otras unidades), solo añade al
+       final. Si no puedes escribir el fichero por lo que sea, no te bloquees: sigue con la tarea.
      - [TRIAJE DESDE SUBAGENTES, si runtime.triaje_desde_subagentes==true] Si tu tarea requiere
        trabajo que cae en OTRA unidad, NO la invadas y NO adivines quién es el dueño: deja una
        entrada [POR ENCAMINAR] en .claude/inbox/_peticiones.md (formato en inbox/_README.md)

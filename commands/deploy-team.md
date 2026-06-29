@@ -40,10 +40,11 @@ a mano: aquí sale **derivado** del análisis.
 
 ## Paso 4 — Bandejas y comandos de runtime
 - Crea `.claude/inbox/` con `_README.md` (desde plantilla) + una bandeja `<nombre>.md` por unidad
-  + `integrador.md` + `_triage_log.md`.
-- Copia a `.claude/commands/` los comandos de runtime del kit: `pull-tasks.md`, `integrar.md`,
-  `inbox.md`, `request-integration.md`, `triaje.md`. (Ya deberían estar si se instaló el kit; si no,
-  cópialos de `.claude/kit/commands/`.)
+  + `integrador.md` + `_triage_log.md` + `_progreso.md` (el tablero de progreso, vacío salvo una
+  cabecera; el usuario lo abre en el editor para ver por dónde van los subagentes).
+- Copia a `.claude/commands/` los comandos de runtime del kit: `pull-tasks.md`, `pull-loop.md`,
+  `apply-integration.md`, `inbox.md`, `request-integration.md`, `add-request.md`. (Ya deberían estar
+  si se instaló el kit; si no, cópialos de `.claude/kit/commands/`.)
 
 ## Paso 4.bis — Capa de producto (si hay rol product_owner)
 Si `roles_transversales` incluye `product_owner`:
