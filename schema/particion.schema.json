@@ -71,6 +71,10 @@
             "type": "integer",
             "minimum": 1,
             "description": "Opcional. Override del límite runtime.wip.por_unidad SOLO para esta unidad (p.ej. una unidad que rinde mejor con 2 tareas a la vez). Si se omite, aplica el global."
+          },
+          "model": {
+            "type": "string",
+            "description": "Opcional. Modelo con el que se lanza el subagente de ESTA unidad (control de coste). Si se omite, aplica runtime.model_por_defecto, y si tampoco está, el modelo heredado de la sesión. Usa el más barato que rinda: las unidades suelen ir bien con un modelo medio (sonnet); reserva el caro (opus) para trabajo arquitectónicamente delicado. Ej: 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001'."
           }
         }
       }
@@ -107,6 +111,10 @@
           "enum": ["1-ventana", "n-ventanas", "ambos"],
           "default": "ambos",
           "description": "1-ventana: un chat lanza subagentes (/pull-tasks). n-ventanas: un chat por unidad (/inbox). ambos: deja disponibles los dos."
+        },
+        "model_por_defecto": {
+          "type": "string",
+          "description": "Opcional. Modelo con el que se lanzan los subagentes de unidad por defecto (control de coste global). Una unidad puede sobreescribirlo con su campo 'model'. Si se omite, los subagentes heredan el modelo de la sesión (que puede ser caro). RECOMENDADO fijar uno económico (p.ej. 'claude-sonnet-4-6') para no agotar cuota: el equipo va algo más lento pero mucho más barato. Reserva el modelo caro para el integrador/arquitecto."
         },
         "loop": {
           "type": "string",
