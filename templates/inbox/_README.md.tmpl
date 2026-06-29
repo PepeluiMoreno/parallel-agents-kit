@@ -61,6 +61,24 @@ adivinar el dueño, lo deja aquí; el orquestador lo encamina a la bandeja corre
 El orquestador, al encaminarla, copia la petición como `[ABIERTO]` en la bandeja de la unidad dueña
 (o en `integrador.md` si es zona caliente) y marca esta entrada `[ENCAMINADO → <destino>]`.
 
+## Formato de un encargo del Product Owner (→ `integrador.md`)
+Cuando el cliente da la **luz verde** (segundo OK en `/product-owner`), el PO deja aquí el encargo
+completo de una funcionalidad: es el "irse con el encargo al integrador". El integrador lo recoge para
+ejecutar (`/pull-tasks`) e integrar (`/apply-integration`).
+
+```markdown
+## [ENCARGO] <fecha ISO> · de:product-owner · ficha:<id-ficha>
+**Funcionalidad:** <título, en una línea>
+**Tareas encoladas (orden por dependencias):**
+1. <unidad> · <tarea> · id:<id> · depende-de:<ids o —>
+2. …
+**Zonas calientes a cablear / migrar:** <router/schema/migración… o ninguna>
+**Criterios de aceptación:** en la ficha <id-ficha> (los valida /accept al cerrar).
+---
+```
+El integrador, al arrancar el encargo, cambia `[ENCARGO]` → `[EN CURSO]`; al terminar e integrar,
+→ `[ENTREGADO]` + hash de merge. El PO mueve entonces la ficha a `EN DESARROLLO`/`HECHA`.
+
 ## Reglas
 - **Append-only**: nunca borres entradas; cámbiales el estado. El histórico es la auditoría.
 - **Una nota = un destinatario**: si toca dos unidades, dos entradas (una por bandeja).

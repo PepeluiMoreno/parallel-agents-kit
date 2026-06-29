@@ -18,6 +18,12 @@ acota cuánto corre a la vez —que en un equipo de agentes es control directo d
 botella—. El "release" de una funcionalidad es cruzar sus criterios de aceptación, no el fin de una
 iteración.
 
+**Si eres el cliente, hablas solo con el Product Owner.** No tienes que orquestar nada. En un único
+chat con `/product-owner` dices en lenguaje natural qué debe hacer la app y sus reglas; el PO te
+propone **cómo** lo implementará y **a qué módulos afecta**, lo validas (OK al plan), y con tu luz
+verde (OK al arranque) se lleva el encargo al integrador. Nunca te pones el sombrero de integrador.
+El porqué: [`docs/ADR-cliente-habla-solo-con-el-po.md`](docs/ADR-cliente-habla-solo-con-el-po.md).
+
 ## La idea en una frase
 Un **arquitecto** analiza tus carpetas/módulos → propone una **partición** del trabajo (un agente
 por unidad, con ficheros disjuntos) → tú la validas → se **despliega** el scaffolding (worktrees,

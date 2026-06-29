@@ -30,6 +30,11 @@ calientes, mergea y migra. Trabaja con cuidado y de forma supervisada.
 5. **Valida que arranca:** levanta o recarga el stack compartido; comprueba que importa todo sin
    errores y que el frontend buildea. Si hay CI, mira que pase.
 6. Commitea el cableado con `chore(integracion): …` o `feat(<unidad>): cableado de …`.
-7. Resume: qué ramas mergeaste, qué cableaste, qué migraciones aplicaste, qué quedó pendiente.
+7. **Cierra el encargo del PO, si lo había.** Si esta integración completó un bloque `[ENCARGO]` de
+   `integrador.md` (todas sus tareas `[HECHO]` y mergeadas), márcalo `[ENTREGADO]` + el hash del merge.
+   Es la señal que el Product Owner espera para mover la ficha a `EN DESARROLLO`/`HECHA` y, con el
+   cliente, pasar a `/accept`.
+8. Resume: qué ramas mergeaste, qué cableaste, qué migraciones aplicaste, qué encargo entregaste y qué
+   quedó pendiente.
 
 $ARGUMENTS

@@ -14,7 +14,13 @@ ventana por cada worktree.
 ## Cómo operar
 
 1. **Confirma rol**: estás en la raíz, rama base. Si no, para y avisa.
-2. **Encamina las peticiones pendientes entre miembros.** Lee `.claude/inbox/_peticiones.md`: es la
+2. **Recoge los encargos del Product Owner.** Lee `.claude/inbox/integrador.md` y busca bloques
+   `[ENCARGO]` (formato en `inbox/_README.md`): son funcionalidades a las que el cliente ya dio luz
+   verde vía `/product-owner`. Sus tareas ya están encoladas como `[ABIERTO]` en las bandejas de
+   unidad; este bloque te dice que hay autorización para empezarlas y en qué orden de dependencias.
+   Marca cada `[ENCARGO]` que vayas a arrancar como `[EN CURSO]`. (Si no hay encargos ni el usuario te
+   dio tareas directas, no hay nada autorizado que arrancar: dilo y para.)
+3. **Encamina las peticiones pendientes entre miembros.** Lee `.claude/inbox/_peticiones.md`: es la
    bandeja donde los agentes dejan peticiones de trabajo que cae en OTRA unidad (sin tener que
    adivinar el destinatario). Para cada entrada `[POR ENCAMINAR]`:
    - decide la unidad dueña usando el mapa de ownership de `.claude/PROTOCOLO_MULTIAGENTE.md` §2
@@ -28,7 +34,7 @@ ventana por cada worktree.
    de cableado describiendo el cambio de esquema. **La migración la redacta y aplica SOLO el
    integrador**, una única vez al integrar, para no acabar con dos heads de Alembic en paralelo (ver
    `docs/ADR-migraciones-zona-caliente.md`).
-3. **Decide el work-list.** `git worktree list` y, por cada unidad `self`, lee su bandeja
+4. **Decide el work-list.** `git worktree list` y, por cada unidad `self`, lee su bandeja
    `.claude/inbox/<unidad>.md` (ya incluye lo recién encaminado); reúne las entradas `[ABIERTO]`.
    Unidad sin tareas → no se lanza. Si el usuario dio tareas directas, úsalas (y encólalas si no
    estaban).
@@ -43,7 +49,7 @@ ventana por cada worktree.
    - **Aplica el WIP por unidad** (`runtime.wip.por_unidad`, o el `wip` propio de la unidad;
      default 1): de las tareas **ya elegibles**, a cada unidad le asignas en esta ronda como mucho ese
      nº, y no le lanzas nada si ya tiene una `[EN CURSO]` sin cerrar. Termina antes de empezar.
-4. **Lanza un subagente por unidad con trabajo, EN PARALELO** (todas las llamadas Agent en un solo
+5. **Lanza un subagente por unidad con trabajo, EN PARALELO** (todas las llamadas Agent en un solo
    mensaje), **hasta el límite de WIP global** (`runtime.wip.global`, default 4). Si hay más unidades
    con `[ABIERTO]` que ese límite, lanza solo las `wip.global` de mayor prioridad y deja el resto en
    cola para la ronda siguiente (anótalo al usuario). Es el dial coste↔riesgo: no abanicas 8 agentes
@@ -84,10 +90,10 @@ ventana por cada worktree.
      Cuando acabes DEVUELVE un resumen: tareas cerradas, hashes, cableados dejados en
      integrador.md, peticiones dejadas en _peticiones.md, y qué quedó sin terminar y por qué.
      ```
-5. **Recoge resultados** y resume al usuario por unidad. Si algún subagente dejó nuevas peticiones
+6. **Recoge resultados** y resume al usuario por unidad. Si algún subagente dejó nuevas peticiones
    en `_peticiones.md`, anótalo: se encaminarán en la próxima ronda (o, si quieres cerrarlas ya,
    vuelve al paso 2 y lanza otra ronda para las unidades recién encargadas).
-6. **Integra (tú, como siempre):** `/apply-integration` — mergea ramas, aplica cableados de integrador.md,
+7. **Integra (tú, como siempre):** `/apply-integration` — mergea ramas, aplica cableados de integrador.md,
    reconcilia, redacta y aplica la migración una sola vez, valida el stack.
 
 ## Por qué es seguro

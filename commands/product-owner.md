@@ -31,10 +31,28 @@ autorización en la ficha:
    deja que lo corrija.
 3. **UI.** Describe (o esboza en texto/ASCII) cómo se ve y se usa. Valida con él.
 4. **Reglas de negocio.** Validaciones, permisos, casos límite, estados. Confírmalas.
-5. **Criterios de aceptación.** Redacta una lista verificable de "esto está hecho cuando…". Cada
+5. **Análisis de impacto (cómo se va a implementar y a qué afecta).** ESTE es el punto donde le
+   explicas al cliente, en su lenguaje, **cómo** piensas implementar lo que pidió y **qué repercusiones**
+   tiene — antes de descomponer nada. No es jerga técnica gratuita: es el plan que él valida. Cruza la
+   funcionalidad con el mapa de ownership (§2) y preséntale:
+   - **Qué módulos/unidades toca** y qué hace cada uno (p.ej. "membresía expone un endpoint nuevo;
+     económico lo consume; el front añade la pantalla").
+   - **Dependencias entre módulos** que esto crea (qué tiene que estar antes que qué) y por tanto el
+     **orden** de trabajo. Si dos unidades se necesitan, dilo aquí: el contrato entre ellas lo fija el
+     arquitecto, no se negocia entre agentes (estrella, no malla — `docs/ADR-topologia-estrella-no-teams.md`).
+   - **Zonas calientes** que se rozan (router, schema raíz, migraciones…): son las que **solo el
+     integrador** toca, así que implican un paso de cableado/migración suyo. Avísale de que eso existe.
+   - **Riesgos y alternativas** si las hay ("se puede hacer rápido tocando X, o bien hacerlo en Y que
+     es más limpio pero toca más módulos — ¿cuál prefieres?").
+
+   Preséntalo como una **propuesta de implementación legible** (una tablita módulo→qué hace→depende-de
+   basta) y **pide su OK a ESTE plan**. Si lo corrige, ajusta. Sin este OK no se descompone. Registra
+   el plan aprobado en la ficha (sección "Plan de implementación").
+6. **Criterios de aceptación.** Redacta una lista verificable de "esto está hecho cuando…". Cada
    criterio debe ser **evaluable programáticamente** siempre que se pueda (un test, una consulta, un
    estado observable), no una impresión subjetiva. Son los que `/accept` contrastará uno a uno.
-6. **Descomposición.** Parte la funcionalidad en tareas **por unidad** (usando el ownership §2).
+7. **Descomposición.** Parte la funcionalidad en tareas **por unidad** (usando el ownership §2 y el
+   plan de impacto ya aprobado en el paso 5).
    **Aplica el test SPEC a cada tarea ANTES de encolarla** —si no lo pasa, reescríbela o pártela; no
    encoles tareas mal definidas (es la causa nº1 de agentes que acaban a tiempos dispares y de merges
    conflictivos). Una tarea es válida si es:
@@ -64,8 +82,26 @@ rica** (formato en `.claude/inbox/_README.md`), incluyendo:
 entre unidades está mal trazado: vuelve a la descomposición, no lo resuelvas con una dependencia
 circular (que dejaría ambas tareas bloqueadas para siempre).
 
-Cambia la ficha a estado `ENCOLADA` y anota los ids de las tareas creadas. Avisa al usuario de que
-ya puede lanzar el desarrollo (`/pull-tasks`).
+Cambia la ficha a estado `ENCOLADA` y anota los ids de las tareas creadas.
+
+## Handoff al integrador (segundo OK del cliente)
+El cliente no orquesta ni mergea: ese es el integrador. Tu trabajo termina **entregándole el encargo**,
+pero el arranque de la ejecución es una **decisión explícita del cliente**, no automática. Por eso:
+
+1. **Resume el encargo listo para ejecutar**, en lenguaje del cliente: la funcionalidad, las N tareas
+   encoladas y a qué unidad va cada una, el orden por dependencias, y los pasos de integrador que
+   conllevará (cableados/migración si toca zona caliente, según el análisis de impacto del paso 5).
+2. **Pide el segundo OK:** "¿Doy luz verde al integrador para empezar?" Hasta que el cliente lo dé, el
+   encargo queda preparado pero **quieto** (las fichas en `ENCOLADA`, las bandejas con `[ABIERTO]`).
+3. **Con el OK**, deja el encargo formalizado para el integrador: añade un bloque `[ENCARGO]` a
+   `.claude/inbox/integrador.md` con el id de ficha, las tareas y unidades implicadas, el orden de
+   dependencias y los cableados/migraciones previstos. Ese es el "irse con el encargo al integrador":
+   el integrador lo recoge al ejecutar `/pull-tasks` (lanza los subagentes por unidad) y al integrar
+   (`/apply-integration`). **Tú, como PO, no ejecutas esos comandos**; solo dejas el encargo y avisas
+   al cliente de que el integrador ya tiene luz verde.
+
+Así el cliente vive en un solo chat (contigo, el PO), valida dos veces —el plan y el arranque— y nunca
+tiene que ponerse el sombrero de integrador.
 
 ## Seguimiento
 Cuando el usuario lo pida (o al volver), revisa el progreso: tareas `[HECHO]` en las bandejas con
