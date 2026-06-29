@@ -55,13 +55,18 @@ ventana por cada worktree.
    cola para la ronda siguiente (anótalo al usuario). Es el dial coste↔riesgo: no abanicas 8 agentes
    porque puedas. Para cada unidad `<U>` con worktree en `<base_worktrees>/<U>`:
    - `subagent_type: "claude"`, `description: "unidad <U>"`.
-   - **`model`** (control de coste): usa el de la unidad (`unidades[].model`) si lo tiene; si no,
-     `runtime.model_por_defecto`; si tampoco, hereda el de la sesión. Pásalo en la llamada Agent.
-     **Recomienda al usuario fijar un modelo económico** (p.ej. `claude-sonnet-4-6`) en
-     `runtime.model_por_defecto` antes de la primera ronda: con 4 subagentes en paralelo el coste se
-     multiplica, y un modelo medio rinde de sobra para el trabajo de unidad. Reserva el caro para el
-     integrador (que eres tú en esta ventana). Si el contrato no fija modelo, **avisa** de que los
-     subagentes heredarán el modelo actual de la sesión (que puede ser caro) y ofrece bajarlo.
+   - **`model`** (control de coste). Elige el modelo del subagente con esta precedencia:
+     `runtime.model_por_tarea[tipo de la tarea]` → `unidades[].model` → `runtime.model_por_defecto` →
+     modelo de la sesión. Pásalo en la llamada Agent. El `tipo` lo trae la tarea (lo etiqueta el PO al
+     encolar: `programar`/`documentar`/…); así una tarea de programar va con sonnet y una de
+     documentar con haiku, aunque sean de la misma unidad. **Recomienda fijar un reparto económico**
+     antes de la primera ronda (p.ej. `model_por_tarea: { programar: claude-sonnet-4-6, documentar:
+     claude-haiku-4-5-20251001 }`): con varios subagentes en paralelo el coste se multiplica, y el
+     modelo medio rinde de sobra para programar. Reserva el caro (opus) para el integrador (tú, en
+     esta ventana) y para el diálogo de diseño. Si el contrato no fija ningún modelo, **avisa** de que
+     los subagentes heredarán el modelo de la sesión (que puede ser caro) y ofrece bajarlo.
+     (Nota Kanban: documentar va DESPUÉS de programar — la tarea de doc depende de la de código, no
+     corren a la vez en la misma unidad; se mantiene 1 tarea en curso por unidad.)
    - **NO** uses `isolation: "worktree"`: el worktree YA existe; el subagente trabaja directamente
      ahí. Crear uno nuevo duplicaría la rama.
    - Prompt (rellena `<U>`, ruta y tareas):

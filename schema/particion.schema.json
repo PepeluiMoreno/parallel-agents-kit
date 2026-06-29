@@ -116,6 +116,16 @@
           "type": "string",
           "description": "Opcional. Modelo con el que se lanzan los subagentes de unidad por defecto (control de coste global). Una unidad puede sobreescribirlo con su campo 'model'. Si se omite, los subagentes heredan el modelo de la sesión (que puede ser caro). RECOMENDADO fijar uno económico (p.ej. 'claude-sonnet-4-6') para no agotar cuota: el equipo va algo más lento pero mucho más barato. Reserva el modelo caro para el integrador/arquitecto."
         },
+        "model_por_tarea": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Opcional. Asigna modelo según el TIPO de tarea (control de coste fino: el modelo caro donde hay poco volumen y criterio; el barato donde hay mucho volumen mecánico). El PO etiqueta cada tarea con su 'tipo' al encolar; /pull-tasks lanza el subagente con el modelo de ese tipo. Precedencia: model_por_tarea[tipo] > unidades[].model > runtime.model_por_defecto > modelo de la sesión. Reparto recomendado: conversar/diseñar=opus (poco volumen, máximo criterio), programar=sonnet (el grueso del código, buen equilibrio), documentar=haiku (mecánico y barato).",
+          "properties": {
+            "conversar": { "type": "string", "description": "Diseño/diálogo de alto nivel (arquitecto↔usuario, PO↔usuario). Recomendado: opus." },
+            "programar": { "type": "string", "description": "Escribir código de módulo (el grueso del volumen). Recomendado: sonnet." },
+            "documentar": { "type": "string", "description": "Docstrings, README de módulo, comentarios (mecánico, bajo riesgo). Recomendado: haiku." }
+          }
+        },
         "loop": {
           "type": "string",
           "enum": ["off", "freno", "pleno"],

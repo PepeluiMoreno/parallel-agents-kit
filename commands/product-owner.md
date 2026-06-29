@@ -67,6 +67,12 @@ autorización en la ficha:
 Por cada tarea, añade un bloque `[ABIERTO]` a `.claude/inbox/<unidad>.md` con **especificación
 rica** (formato en `.claude/inbox/_README.md`), incluyendo:
 - el flujo y las notas de UI/reglas relevantes a esa tarea,
+- la línea **`**Tipo:** <programar|documentar|…>`** — clasifica la NATURALEZA del trabajo. Sirve para
+  el control de coste: `/pull-tasks` lanza el subagente con el modelo que el contrato asigna a ese
+  tipo (`runtime.model_por_tarea`) — típicamente programar→sonnet, documentar→haiku. Si dudas, marca
+  `programar`. **La documentación de un módulo va en su PROPIA tarea de tipo `documentar`, encolada
+  DESPUÉS** (con `**Depende de:**` apuntando a la tarea de código): así corre con modelo barato y no
+  rompe el "1 tarea en curso por unidad". No mezcles "programa Y documenta" en una sola tarea.
 - los **criterios de aceptación** que le aplican,
 - si la tarea necesita algo de OTRA unidad (p.ej. económico necesita que membresía exponga un
   endpoint), **NO la diseñes como negociación entre las dos** —la topología es en estrella, no en
