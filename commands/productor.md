@@ -50,7 +50,20 @@ Por cada tarea, añade un bloque `[ABIERTO]` a `.claude/inbox/<unidad>.md` con *
 rica** (formato en `.claude/inbox/_README.md`), incluyendo:
 - el flujo y las notas de UI/reglas relevantes a esa tarea,
 - los **criterios de aceptación** que le aplican,
+- si la tarea necesita algo de OTRA unidad (p.ej. económico necesita que membresía exponga un
+  endpoint), **NO la diseñes como negociación entre las dos** —la topología es en estrella, no en
+  malla (`docs/ADR-topologia-estrella-no-teams.md`)—: defínela como **dependencia de backlog** con la
+  línea `**Depende de:** <id-tarea>[, <id-tarea>…]` (o `**Depende de:** —` si es independiente). El
+  contrato entre unidades lo fija el arquitecto; aquí solo declaras el orden. Una tarea con
+  dependencias se encola igual en `[ABIERTO]`, pero `/coordinar` no la asignará hasta que sus
+  dependencias estén `[HECHO]` (auto-desbloqueo radial, lo arbitra el integrador).
 - la línea de trazabilidad `**Producto:** <id-ficha>` para enlazar con la ficha.
+
+**Evita los ciclos:** al descomponer, ordena las tareas de modo que las dependencias apunten siempre
+"hacia atrás" (A→B→C, nunca C→A). Si dos tareas se necesitan mutuamente, es señal de que el contrato
+entre unidades está mal trazado: vuelve a la descomposición, no lo resuelvas con una dependencia
+circular (que dejaría ambas tareas bloqueadas para siempre).
+
 Cambia la ficha a estado `ENCOLADA` y anota los ids de las tareas creadas. Avisa al usuario de que
 ya puede lanzar el desarrollo (`/coordinar`).
 

@@ -80,14 +80,31 @@ nueva. Refinamiento de Kanban maduro, no esencial para operar.
 
 ---
 
-## 4. Gate de cierre — `check-cierre.sh`
+## 4. Gate de cierre — `check-cierre.sh`  ✅ IMPLEMENTADO (2026-06-29)
 
-`/emitir-nativo` **describe** pero no incluye el hook `SubagentStop`/`TaskCompleted` que rechaza el
-cierre de una tarea (`exit 2`) si el diff de la rama tocó una zona caliente sin pasar por integrador
-o introdujo una migración. Es la red de seguridad del **lado de salida**, complementaria al test SPEC
-del lado de entrada (`/productor`).
+Hook `SubagentStop`/`TaskCompleted` que rechaza el cierre de una tarea (`exit 2`) si el diff de la
+rama de la unidad tocó una zona caliente sin pasar por integrador o introdujo una migración. Es la
+red de seguridad del **lado de salida**, complementaria al test SPEC del lado de entrada
+(`/productor`). Es uno de los dos mecanismos de agent teams que adoptamos porque **refuerzan la
+estrella sin introducir malla** (la validación al cierre es el punto de control radial que la malla
+no tiene — ver `ADR-topologia-estrella-no-teams.md`).
 
-**Estado:** descrito en `commands/emitir-nativo.md`; el script no está escrito.
+**Estado:** ✅ `templates/hooks/check-cierre.sh` escrito (mismo patrón fail-open que
+`check-ownership.sh`, ejercitado en sus rutas de fallo y de éxito) y cableado por
+`commands/emitir-nativo.md` (paso 3).
+
+---
+
+## 4.bis. Dependencias entre tareas con auto-desbloqueo  ✅ IMPLEMENTADO (2026-06-29)
+
+El otro mecanismo de agent teams adoptado sin malla. Una tarea de backlog puede declarar
+`**Depende de:** <ids>`; `/coordinar` no la asigna hasta que esas tareas estén `[HECHO]`. La
+dependencia entre unidades **no se negocia entre pares** (eso sería malla): el arquitecto fija el
+contrato, el PO declara el orden al encolar, y el integrador arbitra el desbloqueo leyendo el estado
+del backlog. Radial de principio a fin.
+
+**Estado:** ✅ formato en `templates/inbox/_README.md.tmpl`; encolado en `commands/productor.md`;
+enforcement (incl. detección de ciclos) en `commands/coordinar.md` paso 3.
 
 ---
 
@@ -102,13 +119,19 @@ y la capa de producto. El pivote (`/emitir-nativo`) ya deja esto preparado; ser�
 
 ---
 
-## 6. Adopción de agent teams — en espera
+## 6. Adopción de agent teams — en espera (topología malla)
 
-Aparcado por decisión consciente, no por timidez: agent teams **no aísla a los teammates en
-worktrees** (perderíamos el ownership disjunto, la mejor garantía del kit) y nuestra coordinación es
-en **estrella** (todo pasa por el integrador/arquitecto), no en malla, así que el mailbox entre
-iguales aporta poco aquí. Refuerzan la espera las cautelas del §4.bis del informe (sin validación
-entre pasos los errores se propagan en dominó; coste real elevado; el lead tiende a no delegar).
+Aparcado por decisión consciente, no por timidez — formalizado en
+`ADR-topologia-estrella-no-teams.md`: agent teams **no aísla a los teammates en worktrees**
+(perderíamos el ownership disjunto, la mejor garantía del kit) y nuestra coordinación es en
+**estrella** (todo pasa por el integrador/arquitecto), no en malla, así que el mailbox entre iguales
+aporta poco aquí. Refuerzan la espera las cautelas del §4.bis del informe (sin validación entre pasos
+los errores se propagan en dominó; coste real elevado; el lead tiende a no delegar).
+
+> Matiz importante (ver §4 y §4.bis): rechazar la **topología** de teams (la malla) no es rechazar
+> sus **mecanismos**. Los que son radiales por naturaleza —gate de cierre, dependencias con
+> auto-desbloqueo— ya se adoptaron porque mejoran la estrella. Lo único en espera es el mailbox entre
+> pares, que es la malla en sí.
 
 **Reevaluar** cuando salga de experimental, y solo si aparece un flujo que de verdad necesite que dos
 unidades negocien entre sí sin pasar por el integrador. Hasta entonces, subagents `isolation:

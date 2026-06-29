@@ -31,9 +31,18 @@ ventana por cada worktree.
 3. **Decide el work-list.** `git worktree list` y, por cada unidad `self`, lee su bandeja
    `.claude/inbox/<unidad>.md` (ya incluye lo recién encaminado); reúne las entradas `[ABIERTO]`.
    Unidad sin tareas → no se lanza. Si el usuario dio tareas directas, úsalas (y encólalas si no
-   estaban). **Aplica el WIP por unidad** (`runtime.wip.por_unidad`, o el `wip` propio de la unidad;
-   default 1): a cada unidad le asignas en esta ronda como mucho ese nº de tareas, y no le lanzas
-   nada si ya tiene una `[EN CURSO]` sin cerrar. Termina antes de empezar.
+   estaban).
+   - **Auto-desbloqueo de dependencias (radial).** Una tarea `[ABIERTO]` con línea
+     `**Depende de:** <ids>` **NO es elegible** hasta que TODAS esas tareas estén `[HECHO]` (búscalas
+     por id en las bandejas de cualquier unidad). Si alguna sigue pendiente, **sáltala esta ronda** y
+     anótalo al usuario (`tarea X esperando a Y`). El desbloqueo lo arbitras tú, el integrador, al
+     leer el estado del backlog —no lo negocian las unidades entre sí (estrella, no malla;
+     `docs/ADR-topologia-estrella-no-teams.md`)—. `**Depende de:** —` o sin línea = sin dependencias.
+     Cautela: si detectas un ciclo (X espera a Y e Y espera a X, directa o transitivamente), no lo
+     lances; repórtalo como descomposición a corregir, porque ninguna de las dos se desbloquearía.
+   - **Aplica el WIP por unidad** (`runtime.wip.por_unidad`, o el `wip` propio de la unidad;
+     default 1): de las tareas **ya elegibles**, a cada unidad le asignas en esta ronda como mucho ese
+     nº, y no le lanzas nada si ya tiene una `[EN CURSO]` sin cerrar. Termina antes de empezar.
 4. **Lanza un subagente por unidad con trabajo, EN PARALELO** (todas las llamadas Agent en un solo
    mensaje), **hasta el límite de WIP global** (`runtime.wip.global`, default 4). Si hay más unidades
    con `[ABIERTO]` que ese límite, lanza solo las `wip.global` de mayor prioridad y deja el resto en

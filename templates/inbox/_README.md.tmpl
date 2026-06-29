@@ -18,16 +18,24 @@ Hay una bandeja por unidad: {{LISTA_UNIDADES}}.
 Una entrada = un bloque. Append al final. Estados: `[ABIERTO]` → `[EN CURSO]` → `[HECHO]`.
 
 ```markdown
-## [ABIERTO] <fecha ISO> · origen:buzón · prioridad:media
+## [ABIERTO] <fecha ISO> · origen:buzón · prioridad:media · id:<id-tarea>
 **Para:** <unidad>
 **Asunto:** <resumen en una línea>
 **Detalle:** <texto literal de la nota del usuario>
 **Pista de ubicación:** <fichero/área probable — opcional>
+**Depende de:** <id-tarea>[, <id-tarea>…]  | —
 ---
 ```
 
 Al resolver: `[ABIERTO]` → `[HECHO]` y añade `**Resuelto:** <hash> · <una línea>`.
 `prioridad` ∈ alta|media|baja. `origen` ∈ buzón|usuario|<otra-unidad>.
+
+**`Depende de:`** (opcional; `—` o ausente = sin dependencias). Lista los `id` de otras tareas que
+deben estar `[HECHO]` antes de que ésta sea elegible. `/coordinar` no la asigna hasta que se cumplan
+(auto-desbloqueo radial: lo arbitra el integrador leyendo el estado, no se negocia entre unidades —
+ver `../PROTOCOLO_MULTIAGENTE.md` y `docs/ADR-topologia-estrella-no-teams.md`). Las dependencias
+deben apuntar "hacia atrás": un ciclo dejaría las tareas bloqueadas para siempre, así que el PO las
+ordena al descomponer. Da `id` a las tareas que sean destino de una dependencia.
 
 ## Formato de una petición de cableado (→ `integrador.md`)
 ```markdown

@@ -52,10 +52,14 @@ redacta y aplica la migración única, cablea, valida el stack). **No** lleva el
 
 ## Paso 3 — Hooks de proyecto → `.claude/settings.json` (gates deterministas)
 Cablea, además del PreToolUse de ownership (ya en cada agente), los gates que tapan el agujero
-"si un agente dice «listo», el lead se lo cree":
-- **SubagentStop** (o `TaskCompleted` con agent teams): un check que rechaza el cierre (exit 2) si el
-  diff de la rama tocó una zona caliente sin pasar por integrador, o si introdujo una migración. Es
-  la red de seguridad; genera un script `check-cierre.sh` análogo y cablealo.
+"si un agente dice «listo», el lead se lo cree". Esta validación al cierre es el complemento radial
+de la topología en estrella (`docs/ADR-topologia-estrella-no-teams.md`): el centro valida lo que el
+radio devuelve, que es justo el punto de control que la malla de agent teams no tiene.
+- **SubagentStop** (o `TaskCompleted` con agent teams): cablea **`check-cierre.sh`** (ya incluido en
+  `templates/hooks/`) — rechaza el cierre (exit 2) si el diff de la rama de la unidad tocó una zona
+  caliente sin pasar por integrador, o si introdujo una migración. Mismo patrón fail-open que
+  `check-ownership.sh` (sin jq/git/contrato → exit 0, nunca rompe un cierre legítimo). Es la red de
+  seguridad; cópialo a `.claude/kit/hooks/` con permiso de ejecución y cablea el matcher SubagentStop.
 - **TeammateIdle** (solo si `runtime.loop == "freno"` y se usan agent teams): exit 2 para drenar la
   cola; para y pide OK antes de lo irreversible (mergear/migrar). Respeta el ADR del modo freno.
 - Copia `check-ownership.sh` (y los que generes) a `.claude/kit/hooks/` con permiso de ejecución.
