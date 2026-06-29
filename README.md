@@ -185,7 +185,7 @@ normal, fuera del fan-out de worktrees).
 
 | Comando | Rol | Qué hace |
 |---|---|---|
-| `/design-board` | arquitecto | Escanea la estructura, infiere la partición, la propone para validar |
+| `/design-board` | arquitecto | Infiere la partición y la propone para validar. **Repo vacío → modo greenfield**: cuestionario (stack, ORM, dominios…) + genera un scaffold mínimo del stack sobre el que particionar (ver `docs/ADR-greenfield-scaffold-minimo.md`) |
 | `/sync-board` | arquitecto | Compara la partición vigente con el repo actual y propone un parche para resincronizarla |
 | `/deploy-team` | desplegador | Materializa worktrees, protocolo, bandejas desde el contrato |
 | `/generate-config` | arquitecto | Traduce la partición a config nativa de Claude Code (subagents `isolation: worktree` + hooks) en vez del motor propio |
