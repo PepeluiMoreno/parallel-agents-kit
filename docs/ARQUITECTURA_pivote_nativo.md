@@ -2,6 +2,14 @@
 
 > Complementa `COMPARATIVA_AGENT_TEAMS.md` (el *por qué*) con el *cómo*. Lo materializa
 > `/emitir-nativo`. Fecha: 2026-06-28.
+>
+> **⚠️ Actualización (2026-06-29).** Donde este doc dice que el camino a agent teams (mailbox real
+> entre teammates) «espera a que madure» (tabla §"Mapeo", fila *Bandejas + encaminamiento*; y
+> §"Estado y cautelas"), léase a la luz de `ADR-topologia-estrella-no-teams.md`: la malla **no es el
+> destino aplazado**. La topología es en **estrella** (integrador + contrato + backlog) por diseño;
+> las bandejas/encaminamiento se jubilan a favor de subagents `isolation: worktree` + hooks, **no**
+> a favor del mailbox de teams. El resto del *cómo* (mapeo contrato→nativo, ownership por hook) es
+> correcto y no cambia.
 
 ## Idea
 

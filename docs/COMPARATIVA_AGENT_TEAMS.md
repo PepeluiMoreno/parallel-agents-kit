@@ -3,6 +3,14 @@
 > Fecha: 2026-06-27. Fuente: documentación oficial de Claude Code (code.claude.com/docs):
 > `agents`, `agent-teams`, `sub-agents`, `worktrees`, `hooks`, `workflows`, `commands`.
 > Objetivo: decidir si seguimos con el kit propio, pivotamos a lo nativo, o lo complementamos.
+>
+> **⚠️ Actualización (2026-06-29) — leer antes que el resto.** Este informe trata el mailbox/malla de
+> agent teams como una capacidad que al kit *le falta* (§1, §2, §4-B/C) y recomienda adoptar teams
+> «cuando deje de ser experimental» (§4 recomendación). Esa postura quedó **revisada**: ver
+> `ADR-topologia-estrella-no-teams.md`. En resumen, la malla no es algo que falte sino algo que el
+> modelo en **estrella** (coordinación radial vía integrador + contrato + backlog) **no necesita**;
+> no se adopta teams por diseño, no por inmadurez. El análisis de equivalencias y de diferencial de
+> abajo **sigue siendo válido**; lo que cambia es la *recomendación de topología*.
 
 ## TL;DR
 La intuición del usuario era correcta: **Claude Code ya trae de serie la mayor parte de la

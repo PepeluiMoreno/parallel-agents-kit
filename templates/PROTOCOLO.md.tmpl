@@ -4,6 +4,12 @@
 > Claude Code) sobre este repo sin pisarse. Generado por el kit a partir de `particion.json`.
 > Si lo editas a mano, hazlo también en el contrato para que un re-despliegue no lo pise.
 
+**Topología: en estrella.** No te comunicas con las otras unidades directamente (no hay mailbox
+entre pares). Toda coordinación es **radial**: pasa por el **integrador** y por artefactos centrales
+—este protocolo, el contrato y las bandejas—. Si necesitas algo de otra unidad, no se lo pides a
+ella: lo expresas como dependencia en el backlog o, si toca una zona caliente, con
+`/solicitar-integracion` al integrador. (El porqué: `docs/ADR-topologia-estrella-no-teams.md`.)
+
 **Metodología: Kanban continuo.** Este equipo no trabaja por sprints. El trabajo **fluye** por una
 cola permanente (las bandejas) priorizada; cada unidad **tira** (pull) de su bandeja, no se le
 empuja. Estados explícitos `[ABIERTO] → [EN CURSO] → [HECHO]`. No hay cajas temporales ni "fin de

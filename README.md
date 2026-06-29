@@ -5,6 +5,13 @@ Claude Code trabajan en paralelo sin pisarse**, coordinados por un integrador y 
 buzón. Lo que en un proyecto se teclea a mano (qué posee cada agente, qué es zona caliente), aquí
 lo **infiere un agente arquitecto** analizando la estructura del proyecto, y lo despliega solo.
 
+**Topología: en estrella, no en malla.** Los agentes no se hablan entre sí (como haría el *mailbox*
+de agent teams): toda la coordinación es **radial** y pasa por un centro —el **integrador**, más el
+contrato (`particion.json`) y el backlog—. El estado del equipo vive en esos artefactos compartidos,
+no en conversaciones entre pares, así que la malla no hace falta. Por eso el kit usa subagents
+aislados por worktree + hooks y **no** adopta agent teams. El porqué, en
+[`docs/ADR-topologia-estrella-no-teams.md`](docs/ADR-topologia-estrella-no-teams.md).
+
 **Metodología: Kanban continuo.** El equipo virtual opera por flujo, no por sprints. El trabajo
 entra en una cola priorizada (las bandejas), cada unidad **tira** de la suya, y un **límite de WIP**
 acota cuánto corre a la vez —que en un equipo de agentes es control directo de coste y de cuellos de
