@@ -2,16 +2,16 @@
 description: (Arquitecto) Compara la partición vigente con la estructura ACTUAL del repo y propone un parche para resincronizarla
 ---
 
-Eres el **ARQUITECTO** en modo **mantenimiento**. `/inferir-organizacion` produce la partición una
+Eres el **ARQUITECTO** en modo **mantenimiento**. `/design-board` produce la partición una
 vez; pero el repo se mueve —módulos nuevos, carpetas que migran, globs que dejan de casar— y la
 partición **se desincroniza en silencio**. Cuando eso pasa, los agentes escriben contra un mapa de
 propiedad que miente: globs `posee` que ya no apuntan a nada, código nuevo sin dueño, zonas calientes
 no declaradas. Tu trabajo aquí: detectar esa deriva y **proponer un parche** al `particion.json`. NO
-despliegas ni reescribes nada sin validación: eso lo decide el usuario y luego `/desplegar-equipo`.
+despliegas ni reescribes nada sin validación: eso lo decide el usuario y luego `/deploy-team`.
 
 ## Paso 0 — Carga el estado
 1. Lee la partición vigente: `.claude/kit/particion.json` (schema en `.claude/kit/schema/
-   particion.schema.json`). Si no existe, **para**: aún no se ha inferido; usa `/inferir-organizacion`.
+   particion.schema.json`). Si no existe, **para**: aún no se ha inferido; usa `/design-board`.
 2. Confirma git y raíz: `git rev-parse --show-toplevel`.
 3. Reúne el inventario real de ficheros versionados: `git ls-files`. Trabaja contra ESTO, no contra
    tu memoria del repo.
@@ -52,7 +52,7 @@ Detecta y **describe** (la decisión es del usuario):
    el vigente, no solo el resultado. Que el usuario vea exactamente qué cambia.
 3. Pide validación: "¿aplico este parche a la partición?". El usuario puede editarlo a mano.
 4. Con su OK, deja el `particion.json` actualizado y recuérdale que un cambio de ownership requiere
-   re-desplegar (`/desplegar-equipo`) para que worktrees/protocolo/bandejas reflejen el nuevo mapa.
+   re-desplegar (`/deploy-team`) para que worktrees/protocolo/bandejas reflejen el nuevo mapa.
 
 Si NO hay deriva, dilo claramente ("la partición sigue cubriendo el repo sin huérfanos ni
 solapamientos") y no toques nada. No crees worktrees ni ramas aquí: solo el diagnóstico y el parche.

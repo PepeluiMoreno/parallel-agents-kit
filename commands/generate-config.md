@@ -3,7 +3,7 @@ description: (Arquitecto) Genera config NATIVA de Claude Code (subagent-definiti
 ---
 
 Eres el **ARQUITECTO** en modo **emisión nativa**. El kit demostró su valor inventando un motor de
-orquestación (bandejas, encaminamiento `_peticiones.md`, `/coordinar`), pero Claude Code ya trae ese
+orquestación (bandejas, encaminamiento `_peticiones.md`, `/pull-tasks`), pero Claude Code ya trae ese
 núcleo de serie: subagents con `isolation: worktree`, hooks de ciclo de vida como gate, y —cuando
 salga de experimental— agent teams con task list y mailbox. Mantenerlo a mano es reimplementar lo
 nativo (ver `docs/COMPARATIVA_AGENT_TEAMS.md` y `docs/ARQUITECTURA_pivote_nativo.md`).
@@ -18,7 +18,7 @@ NO ejecutas el equipo; solo emites la config y la propones para validar.
 > doc difiere, manda la doc.
 
 ## Paso 0 — Carga
-1. Lee `.claude/kit/particion.json` (si no existe, para: usa `/inferir-organizacion`).
+1. Lee `.claude/kit/particion.json` (si no existe, para: usa `/design-board`).
 2. Lee `.claude/kit/templates/hooks/check-ownership.sh` (el enforcement de ownership reutilizable).
 
 ## Paso 1 — Una subagent-definition por unidad `self` → `.claude/agents/<unidad>.md`
@@ -47,7 +47,7 @@ Body (system prompt) = la identidad y las reglas duras, derivadas del PROTOCOLO:
 
 ## Paso 2 — Subagent-definition del integrador → `.claude/agents/integrador.md`
 Igual, pero SIN `isolation` (vive en la raíz, rama base), con `model: claude-opus-4-8`, y con acceso
-para mergear/migrar. Su prompt = el rol de `/aplicar-integracion` (único que toca zonas calientes,
+para mergear/migrar. Su prompt = el rol de `/apply-integration` (único que toca zonas calientes,
 redacta y aplica la migración única, cablea, valida el stack). **No** lleva el hook de ownership.
 
 ## Paso 3 — Hooks de proyecto → `.claude/settings.json` (gates deterministas)
@@ -67,10 +67,10 @@ radio devuelve, que es justo el punto de control que la malla de agent teams no 
 ## Paso 4 — Qué del kit se mantiene y qué se jubila
 Déjalo escrito en el resumen al usuario:
 - **Se mantiene (diferencial real):** `particion.json` + schema (fuente de verdad), el arquitecto
-  (`/inferir-organizacion`, `/reinferir`), y TODA la capa de producto (`/productor`, `/aceptar`,
+  (`/design-board`, `/sync-board`), y TODA la capa de producto (`/product-owner`, `/accept`,
   backlog en `.claude/producto/`). Nativo no cubre nada de esto.
 - **Se jubila al adoptar nativo:** el motor de orquestación manual — bandejas `.claude/inbox/`,
-  `_peticiones.md` + encaminamiento, `/coordinar`, `/coordinar-bucle`, `/inbox`. Su función la dan
+  `_peticiones.md` + encaminamiento, `/pull-tasks`, `/pull-loop`, `/inbox`. Su función la dan
   la task list + mailbox nativos. NO los borres aquí: márcalos como "legacy" en el resumen; el
   usuario decide cuándo retirarlos (probablemente cuando agent teams deje de ser experimental).
 
@@ -82,7 +82,7 @@ Déjalo escrito en el resumen al usuario:
 3. Advierte de lo experimental (agent teams tras flag; `--agent` no respeta `isolation` en algunas
    versiones — el aislamiento fiable es vía la herramienta Agent / subagents).
 4. Pide validación. Con el OK, el usuario ya puede lanzar subagents por unidad (o agent teams si
-   activa el flag) en vez de `/coordinar`.
+   activa el flag) en vez de `/pull-tasks`.
 
 No crees worktrees ni ramas aquí: el `isolation: worktree` los crea Claude Code al spawnear cada
 subagent. Solo emites la config + la propuesta.

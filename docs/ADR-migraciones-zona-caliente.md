@@ -39,9 +39,9 @@ Flujo resultante para un cambio de esquema:
 
 1. La unidad dueña del modelo crea/modifica la clase ORM en su rama y la commitea.
 2. Deja un bloque `[PENDIENTE]` en `integrador.md` describiendo el cambio de esquema
-   (`/solicitar-integracion`).
+   (`/request-integration`).
 3. El integrador mergea la(s) rama(s), **autogenera una migración** contra los modelos integrados,
-   la revisa, y la aplica una vez (`/aplicar-integracion`, paso 4).
+   la revisa, y la aplica una vez (`/apply-integration`, paso 4).
 
 Como la migración se redacta **después** del merge, sobre un único estado de modelos, **nace con un
 solo head**. No hay nada que reconciliar.
@@ -67,7 +67,7 @@ solo head**. No hay nada que reconciliar.
 
 **En contra / límites:**
 - La unidad **no puede probar su migración de forma aislada** en su worktree antes de integrar (no
-  la tiene). Mitiga: el integrador valida el stack tras aplicar (paso 5 de `/aplicar-integracion`),
+  la tiene). Mitiga: el integrador valida el stack tras aplicar (paso 5 de `/apply-integration`),
   y la autogeneración desde modelos correctos es de bajo riesgo.
 - Concentra un paso más en el integrador. Aceptable: ya es el cuello de botella consciente para todo
   lo irreversible (merge, cableado, migración, stack).
@@ -77,9 +77,9 @@ solo head**. No hay nada que reconciliar.
 Si en un proyecto concreto se prefiere el modelo anterior (autonomía total de la unidad), revertir
 es local a estos puntos, sin tocar el motor:
 - `templates/PROTOCOLO.md.tmpl` §1 y §6,
-- `commands/coordinar.md` (prompt del subagente y paso 2),
-- `commands/aplicar-integracion.md` (paso 4),
-- `commands/solicitar-integracion.md` (paso 2),
-- `commands/inferir-organizacion.md` (paso 2).
+- `commands/pull-tasks.md` (prompt del subagente y paso 2),
+- `commands/apply-integration.md` (paso 4),
+- `commands/request-integration.md` (paso 2),
+- `commands/design-board.md` (paso 2).
 
 Devuelve a las unidades el permiso de crear migraciones y al integrador el de reconciliar heads.

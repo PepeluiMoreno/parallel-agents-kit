@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/PepeluiMoreno/parallel-agents-kit/schema/particion.schema.json",
   "title": "Partición de un proyecto para el equipo de desarrollo virtual",
-  "description": "Contrato de DATOS PUROS que produce el agente arquitecto (/inferir-organizacion) tras escanear la estructura del proyecto, y que consume el desplegador (/desplegar-equipo) para materializar el scaffolding. Es editable a mano: revísalo y ajústalo antes de desplegar. El motor NO ejecuta lógica del proyecto; solo lee este mapa.",
+  "description": "Contrato de DATOS PUROS que produce el agente arquitecto (/design-board) tras escanear la estructura del proyecto, y que consume el desplegador (/deploy-team) para materializar el scaffolding. Es editable a mano: revísalo y ajústalo antes de desplegar. El motor NO ejecuta lógica del proyecto; solo lee este mapa.",
   "type": "object",
   "required": ["version", "vcs", "raiz", "unidades", "zonas_calientes", "roles_transversales", "runtime"],
   "additionalProperties": false,
@@ -78,7 +78,7 @@
     "zonas_calientes": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "Ficheros/globs que tocan MUCHAS unidades (routers raíz, schema raíz, migraciones, design system, config global, event bus). Dueño único: el integrador. Ninguna unidad los edita; se piden con /solicitar-integracion."
+      "description": "Ficheros/globs que tocan MUCHAS unidades (routers raíz, schema raíz, migraciones, design system, config global, event bus). Dueño único: el integrador. Ninguna unidad los edita; se piden con /request-integration."
     },
     "roles_transversales": {
       "type": "array",
@@ -106,7 +106,7 @@
           "type": "string",
           "enum": ["1-ventana", "n-ventanas", "ambos"],
           "default": "ambos",
-          "description": "1-ventana: un chat lanza subagentes (/coordinar). n-ventanas: un chat por unidad (/inbox). ambos: deja disponibles los dos."
+          "description": "1-ventana: un chat lanza subagentes (/pull-tasks). n-ventanas: un chat por unidad (/inbox). ambos: deja disponibles los dos."
         },
         "loop": {
           "type": "string",
@@ -117,7 +117,7 @@
         "triaje_desde_subagentes": {
           "type": "boolean",
           "default": false,
-          "description": "Si true, un subagente que detecte trabajo de OTRA unidad puede dejarlo en la bandeja de la unidad dueña (vía /peticion) en vez de invadirla."
+          "description": "Si true, un subagente que detecte trabajo de OTRA unidad puede dejarlo en la bandeja de la unidad dueña (vía /add-request) en vez de invadirla."
         },
         "wip": {
           "type": "object",

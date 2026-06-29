@@ -11,7 +11,7 @@
 # complemento radial del ownership: el centro valida lo que el radio devuelve (ver
 # ADR-topologia-estrella-no-teams: la estrella mete un punto de validación que la malla no tiene).
 #
-# Instalación: lo despliega /emitir-nativo y lo cablea como hook SubagentStop en .claude/settings.json
+# Instalación: lo despliega /generate-config y lo cablea como hook SubagentStop en .claude/settings.json
 # (con agent teams, el evento análogo es TaskCompleted). Requiere: jq, git.
 #
 # Contrato del hook (Claude Code):
@@ -69,9 +69,9 @@ ZONAS="$(jq -c '.zonas_calientes // []' "$PARTICION")"
 MIGR="$(jq -c '.runtime.patrones_migracion // ["**/migrations/**","**/versions/**","**/alembic/**","**/prisma/migrations/**"]' "$PARTICION")"
 
 for rel in $FICHEROS; do
-  # 3a. ¿tocó una zona caliente? → el integrador es el único dueño; debió ir por /solicitar-integracion.
+  # 3a. ¿tocó una zona caliente? → el integrador es el único dueño; debió ir por /request-integration.
   if casa_algun_glob "$rel" "$ZONAS"; then
-    echo "CIERRE BLOQUEADO: la rama de '$UNIDAD' modificó la ZONA CALIENTE '$rel'. Eso lo cablea el integrador. Revierte ese cambio y deja un bloque [PENDIENTE] en integrador.md (/solicitar-integracion) antes de cerrar. Ver ADR-topologia-estrella-no-teams (validación radial)." >&2
+    echo "CIERRE BLOQUEADO: la rama de '$UNIDAD' modificó la ZONA CALIENTE '$rel'. Eso lo cablea el integrador. Revierte ese cambio y deja un bloque [PENDIENTE] en integrador.md (/request-integration) antes de cerrar. Ver ADR-topologia-estrella-no-teams (validación radial)." >&2
     exit 2
   fi
   # 3b. ¿introdujo una migración? → las redacta el integrador tras el merge (ADR-migraciones).

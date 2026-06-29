@@ -8,7 +8,7 @@
 # pertenece o si cae en una zona caliente. Así el ownership lo enforced la configuración, no la
 # buena voluntad del prompt.
 #
-# Instalación: lo despliega /emitir-nativo y lo cablea como hook PreToolUse (matcher Edit|Write|
+# Instalación: lo despliega /generate-config y lo cablea como hook PreToolUse (matcher Edit|Write|
 # MultiEdit) en .claude/settings.json. Requiere: jq, git.
 #
 # Contrato del hook (Claude Code):
@@ -67,12 +67,12 @@ for abs in $PATHS; do
   rel="${abs#"$RAIZ"/}"
   # 3a. ¿zona caliente? → bloquear siempre (ninguna unidad las edita).
   if casa_algun_glob "$rel" "$ZONAS"; then
-    echo "OWNERSHIP: '$rel' es ZONA CALIENTE. La unidad '$UNIDAD' no la edita; usa /solicitar-integracion (deja un bloque [PENDIENTE] en integrador.md). Ver PROTOCOLO §3." >&2
+    echo "OWNERSHIP: '$rel' es ZONA CALIENTE. La unidad '$UNIDAD' no la edita; usa /request-integration (deja un bloque [PENDIENTE] en integrador.md). Ver PROTOCOLO §3." >&2
     exit 2
   fi
   # 3b. ¿pertenece a la unidad? → permitir; si no → bloquear.
   if [[ -z "$POSEE" || "$POSEE" == "null" ]]; then
-    echo "OWNERSHIP: la unidad '$UNIDAD' no existe en particion.json. Revisa el contrato (/reinferir)." >&2
+    echo "OWNERSHIP: la unidad '$UNIDAD' no existe en particion.json. Revisa el contrato (/sync-board)." >&2
     exit 2
   fi
   if ! casa_algun_glob "$rel" "$POSEE"; then

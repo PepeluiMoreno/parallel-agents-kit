@@ -4,7 +4,7 @@
 #
 # Copia los comandos de runtime + bootstrap a <destino>/.claude/commands/ y el propio kit
 # (schema + plantillas) a <destino>/.claude/kit/. NO crea worktrees ni analiza nada: eso lo
-# hace luego /inferir-organizacion y /desplegar-equipo desde el chat.
+# hace luego /design-board y /deploy-team desde el chat.
 #
 # Uso:
 #   ./install.sh /ruta/al/repo/destino
@@ -49,9 +49,9 @@ cat <<EOF
 ════════════════════════════════════════════════════════════════════
  LISTO. En un chat de Claude Code abierto en $DEST:
 
-   1. /inferir-organizacion    → el arquitecto escanea y propone la partición
+   1. /design-board   → el arquitecto escanea y propone la partición (el tablero)
    2. (revisas/ajustas .claude/kit/particion.json)
-   3. /desplegar-equipo   → crea worktrees, protocolo, bandejas
-   4. /coordinar            → empieza a trabajar en modo 1-ventana
+   3. /deploy-team    → crea worktrees, protocolo, bandejas
+   4. /pull-tasks     → tira tareas de las bandejas y las trabaja (modo 1-ventana)
 ════════════════════════════════════════════════════════════════════
 EOF

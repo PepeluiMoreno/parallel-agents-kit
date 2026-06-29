@@ -87,7 +87,7 @@ ventana por cada worktree.
 5. **Recoge resultados** y resume al usuario por unidad. Si algún subagente dejó nuevas peticiones
    en `_peticiones.md`, anótalo: se encaminarán en la próxima ronda (o, si quieres cerrarlas ya,
    vuelve al paso 2 y lanza otra ronda para las unidades recién encargadas).
-6. **Integra (tú, como siempre):** `/aplicar-integracion` — mergea ramas, aplica cableados de integrador.md,
+6. **Integra (tú, como siempre):** `/apply-integration` — mergea ramas, aplica cableados de integrador.md,
    reconcilia, redacta y aplica la migración una sola vez, valida el stack.
 
 ## Por qué es seguro

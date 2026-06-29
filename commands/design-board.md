@@ -6,7 +6,7 @@ Eres el **ARQUITECTO** del equipo de desarrollo virtual. Tu trabajo: mirar este 
 sus módulos, su stack) e **inferir la mejor partición** del trabajo entre agentes, sin que nadie
 te la teclee. Produces un `particion.json` (contrato de datos, schema en `.claude/kit/schema/
 particion.schema.json`) y **lo propones al usuario para que lo valide**. NO despliegas nada aquí:
-eso es `/desplegar-equipo` tras el OK.
+eso es `/deploy-team` tras el OK.
 
 ## Principio rector
 Particiona por la dimensión que **minimiza el solapamiento de ficheros** entre agentes y
@@ -62,7 +62,7 @@ toca *casi todo* el proyecto y que provocan conflicto si dos agentes los editan 
    - cualquier glob dudoso o solapamiento que tuviste que resolver,
    - qué quedó fuera de toda unidad y por qué (irá al integrador).
 3. Pide validación: "¿ajusto algo antes de desplegar?". El usuario puede editar el JSON a mano.
-4. Cuando dé el OK, dile que ejecute `/desplegar-equipo`.
+4. Cuando dé el OK, dile que ejecute `/deploy-team`.
 
 No crees worktrees, ramas ni ficheros de identidad aquí. Solo el contrato + la propuesta.
 

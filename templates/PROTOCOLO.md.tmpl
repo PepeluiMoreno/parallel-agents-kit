@@ -8,19 +8,19 @@
 entre pares). Toda coordinación es **radial**: pasa por el **integrador** y por artefactos centrales
 —este protocolo, el contrato y las bandejas—. Si necesitas algo de otra unidad, no se lo pides a
 ella: lo expresas como dependencia en el backlog o, si toca una zona caliente, con
-`/solicitar-integracion` al integrador. (El porqué: `docs/ADR-topologia-estrella-no-teams.md`.)
+`/request-integration` al integrador. (El porqué: `docs/ADR-topologia-estrella-no-teams.md`.)
 
 **Metodología: Kanban continuo.** Este equipo no trabaja por sprints. El trabajo **fluye** por una
 cola permanente (las bandejas) priorizada; cada unidad **tira** (pull) de su bandeja, no se le
 empuja. Estados explícitos `[ABIERTO] → [EN CURSO] → [HECHO]`. No hay cajas temporales ni "fin de
-iteración": el "release" de una funcionalidad es cruzar sus criterios de aceptación en `/aceptar`.
+iteración": el "release" de una funcionalidad es cruzar sus criterios de aceptación en `/accept`.
 Para que el flujo no se atasque ni se dispare, se limita el trabajo en curso (WIP, §7).
 
 ## 0. Lo primero al arrancar
 1. Averigua quién eres: lee `.claude/AGENTE.local.md`. Te dice tu `ROL`
    (`unidad` | `integrador` | `buzon`) y, si eres de unidad, tu `UNIDAD`.
-2. Unidad → ejecuta `/inbox`.  Integrador → `/aplicar-integracion` (o `/coordinar` en modo 1-ventana).
-   Buzón → espera notas y procésalas con `/peticion`.
+2. Unidad → ejecuta `/inbox`.  Integrador → `/apply-integration` (o `/pull-tasks` en modo 1-ventana).
+   Buzón → espera notas y procésalas con `/add-request`.
 
 ## 1. Roles
 | Rol | Dónde vive | Qué hace | Qué NO hace |
@@ -40,7 +40,7 @@ carpetas; el integrador posee las zonas calientes. Nadie edita lo que no posee.
 > Viven en otro repositorio; se trabajan allí con rama+PR normales y quedan FUERA del fan-out de
 > worktrees de este repo. La coordinación con el principal es manual (PR + nota en bandeja).
 
-## 3. Zonas calientes (NINGÚN agente de unidad las edita — se piden con `/solicitar-integracion`)
+## 3. Zonas calientes (NINGÚN agente de unidad las edita — se piden con `/request-integration`)
 {{LISTA_ZONAS_CALIENTES}}
 <!-- una línea por zona caliente -->
 
@@ -48,7 +48,7 @@ carpetas; el integrador posee las zonas calientes. Nadie edita lo que no posee.
 1. `git status` confirma worktree + rama `feature/<unidad>`.
 2. `/inbox` → coge una tarea `[ABIERTO]`.
 3. Desarrolla **solo en tus ficheros** (§2). Commitea `tipo(<unidad>): …`.
-4. ¿Zona caliente? NO la edites: deja tu parte en tu rama y `/solicitar-integracion`.
+4. ¿Zona caliente? NO la edites: deja tu parte en tu rama y `/request-integration`.
 5. Marca `[HECHO]` con el hash.
 6. Avisa al integrador cuando tu rama esté lista.
 
@@ -71,7 +71,7 @@ remoto recibe la base ya integrada y limpia.
   frontend en tu worktree (colisión de puertos/BD).
 
 ## 7. Mecanismos de runtime activos
-- Modo: **{{RUNTIME_MODO}}** (1-ventana = `/coordinar`; n-ventanas = un chat por unidad con `/inbox`).
+- Modo: **{{RUNTIME_MODO}}** (1-ventana = `/pull-tasks`; n-ventanas = un chat por unidad con `/inbox`).
 - Loop: **{{RUNTIME_LOOP}}** (off / freno = para antes de mergear-migrar / pleno = desatendido).
 - Triaje desde subagentes: **{{RUNTIME_TRIAJE_SUB}}** (si on, un subagente deriva trabajo de otra
   unidad a su bandeja en vez de invadirla).
@@ -86,6 +86,6 @@ remoto recibe la base ya integrada y limpia.
     `wip` en el contrato.)
 
 ## 8. El buzón y las bandejas (`.claude/inbox/`)
-El usuario reporta de forma desordenada al chat buzón; `/peticion` clasifica por unidad y escribe un
+El usuario reporta de forma desordenada al chat buzón; `/add-request` clasifica por unidad y escribe un
 bloque `[ABIERTO]` en `.claude/inbox/<unidad>.md`. Las peticiones de cableado van a
 `.claude/inbox/integrador.md`. Formato en `.claude/inbox/_README.md`.

@@ -65,7 +65,7 @@ Consecuencia operativa, en tres tiempos (sin cambios respecto a lo ya implementa
 - **Evita la propagación de errores en dominó.** En malla, si un teammate dice "listo", el lead se lo
   cree y el error se propaga sin validación entre pasos (riesgo documentado en
   `COMPARATIVA_AGENT_TEAMS.md` §4.bis). La estrella mete un punto de validación central: el
-  integrador al mergear y `/aceptar` contra criterios. La coordinación radial es una **red de
+  integrador al mergear y `/accept` contra criterios. La coordinación radial es una **red de
   seguridad**, no solo una topología.
 - **Es más fiel al flujo Kanban del kit.** El corazón de Kanban (y de la metodología que el kit ya
   declara) es una **cola central** de la que se tira, no una conversación entre quienes ejecutan. La
@@ -106,5 +106,5 @@ Consecuencia operativa, en tres tiempos (sin cambios respecto a lo ya implementa
 Esta decisión es de *postura/arquitectura*, no de código: no hay un commit que deshacer para
 "volver a la malla". Reabrirla significa documentar el flujo entre-pares que la justifique y, si se
 materializa, añadir agent teams como tercer backend de ejecución bajo el mismo `particion.json`
-(modos `off`/`freno`/`pleno` → más un modo `teams`). Los puntos a tocar serían `/emitir-nativo` (que
+(modos `off`/`freno`/`pleno` → más un modo `teams`). Los puntos a tocar serían `/generate-config` (que
 ya contempla el camino nativo) y las cautelas de `COMPARATIVA_AGENT_TEAMS.md` §3.

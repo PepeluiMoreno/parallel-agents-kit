@@ -30,11 +30,11 @@ protocolo, bandejas, comandos) → trabajas en **una sola ventana** lanzando sub
 - **Unidad**: el trozo de proyecto que posee un agente (un dominio, una capa, lo que el arquitecto
   decida). Su ownership son **globs de ficheros disjuntos** respecto a las demás unidades.
 - **Zona caliente**: fichero que tocan muchas unidades (router/schema raíz, migraciones, design
-  system…). Dueño único: el **integrador**. Nadie más lo edita; se pide con `/solicitar-integracion`.
+  system…). Dueño único: el **integrador**. Nadie más lo edita; se pide con `/request-integration`.
 - **Agente vs subagente**: un *agente* es un chat de Claude Code. Un *subagente* es un agente que
   otro agente lanza por debajo (herramienta Agent). El modo 1-ventana usa subagentes: un solo chat
   (el integrador) lanza un subagente por unidad y luego integra → no abres N ventanas.
-- **Loop** (opcional): repetir un comando en bucle. `/loop /coordinar` drena las bandejas sola.
+- **Loop** (opcional): repetir un comando en bucle. `/loop /pull-tasks` drena las bandejas sola.
   Es ortogonal a los subagentes: estos paralelizan en el espacio (N unidades a la vez), el loop
   repite en el tiempo. Se componen.
 
@@ -44,10 +44,10 @@ protocolo, bandejas, comandos) → trabajas en **una sola ventana** lanzando sub
 ```
 Luego, en un chat de Claude Code abierto en ese repo:
 ```
-/inferir-organizacion     # arquitecto: escanea y PROPONE la partición (no despliega)
+/design-board     # arquitecto: escanea y PROPONE la partición (no despliega)
                        # revisas/editas .claude/kit/particion.json
-/desplegar-equipo    # materializa worktrees, protocolo, bandejas
-/coordinar             # trabaja en modo 1-ventana (o /inbox por unidad en modo N-ventanas)
+/deploy-team    # materializa worktrees, protocolo, bandejas
+/pull-tasks             # trabaja en modo 1-ventana (o /inbox por unidad en modo N-ventanas)
 ```
 
 ## El contrato `particion.json`
@@ -60,36 +60,36 @@ normal, fuera del fan-out de worktrees).
 ## Comandos
 | Comando | Rol | Qué hace |
 |---|---|---|
-| `/inferir-organizacion` | arquitecto | Escanea la estructura, infiere la partición, la propone para validar |
-| `/reinferir` | arquitecto | Compara la partición vigente con el repo actual y propone un parche para resincronizarla |
-| `/desplegar-equipo` | desplegador | Materializa worktrees, protocolo, bandejas desde el contrato |
-| `/emitir-nativo` | arquitecto | Traduce la partición a config nativa de Claude Code (subagents `isolation: worktree` + hooks) en vez del motor propio |
-| `/coordinar` | integrador | Modo 1-ventana: lanza un subagente por unidad y luego integra |
-| `/coordinar-bucle` | integrador | Modo desatendido **freno**: drena bandejas en bucle, PARA antes de mergear/migrar. Úsalo con `/loop /coordinar-bucle` |
+| `/design-board` | arquitecto | Escanea la estructura, infiere la partición, la propone para validar |
+| `/sync-board` | arquitecto | Compara la partición vigente con el repo actual y propone un parche para resincronizarla |
+| `/deploy-team` | desplegador | Materializa worktrees, protocolo, bandejas desde el contrato |
+| `/generate-config` | arquitecto | Traduce la partición a config nativa de Claude Code (subagents `isolation: worktree` + hooks) en vez del motor propio |
+| `/pull-tasks` | integrador | Modo 1-ventana: lanza un subagente por unidad y luego integra |
+| `/pull-loop` | integrador | Modo desatendido **freno**: drena bandejas en bucle, PARA antes de mergear/migrar. Úsalo con `/loop /pull-loop` |
 | `/inbox` | unidad | Lee su bandeja y trabaja sus tareas (modo N-ventanas) |
-| `/solicitar-integracion` | unidad | Encola una petición de zona caliente al integrador |
-| `/aplicar-integracion` | integrador | Mergea ramas, aplica cableados, reconcilia y aplica migraciones |
-| `/peticion` | buzón | Clasifica una nota del usuario y la encola en la bandeja correcta |
-| `/productor` | product owner | Propone funcionalidad, la diseña en diálogo contigo y, con tu OK, la descompone en tareas y las encola |
-| `/aceptar` | product owner | Valida una funcionalidad terminada contra sus criterios de aceptación y te resume para el visto bueno |
+| `/request-integration` | unidad | Encola una petición de zona caliente al integrador |
+| `/apply-integration` | integrador | Mergea ramas, aplica cableados, reconcilia y aplica migraciones |
+| `/add-request` | buzón | Clasifica una nota del usuario y la encola en la bandeja correcta |
+| `/product-owner` | product owner | Propone funcionalidad, la diseña en diálogo contigo y, con tu OK, la descompone en tareas y las encola |
+| `/accept` | product owner | Valida una funcionalidad terminada contra sus criterios de aceptación y te resume para el visto bueno |
 
 ## Capa de producto: el Product Owner
-Además de construir, el kit puede **decidir qué construir**. El rol **product owner** (`/productor`)
+Además de construir, el kit puede **decidir qué construir**. El rol **product owner** (`/product-owner`)
 es un agente proactivo que:
 1. propone funcionalidad con criterio (a partir de una *ficha de dominio* que apruebas),
 2. la diseña **en diálogo contigo** —alcance, flujos, UI, reglas, criterios de aceptación—,
    pidiendo tu OK en cada paso,
 3. con tu visto bueno, la **descompone en tareas por unidad** y las **encola** en las bandejas
    (con especificación rica + trazabilidad),
-4. y al terminar, valida lo entregado contra los criterios (`/aceptar`).
+4. y al terminar, valida lo entregado contra los criterios (`/accept`).
 
 Vive en `.claude/producto/` (backlog de fichas + ficha de dominio), paralelo a `.claude/inbox/`.
 Es a la funcionalidad lo que el buzón es al desarrollo: el **buzón** es reactivo (bugs/quejas), el
 **PO** es proactivo (producto nuevo). No escribe código; reutiliza el equipo de desarrollo existente.
 
 ## Modos de autonomía (`runtime.loop`)
-- **off**: `/coordinar` es un disparo único; tú decides cuándo.
-- **freno** (recomendado para desatendido): `/loop /coordinar-bucle` drena las bandejas en bucle con
+- **off**: `/pull-tasks` es un disparo único; tú decides cuándo.
+- **freno** (recomendado para desatendido): `/loop /pull-loop` drena las bandejas en bucle con
   subagentes, pero **para y pide OK antes de mergear/cablear/migrar** (lo irreversible). Se
   autodetiene cuando no queda nada que drenar.
 - **pleno**: integraría sin preguntar hasta vaciar. Desaconsejado con BD compartida.
@@ -100,6 +100,6 @@ v1: un repo principal con worktrees; cross-repo modelado pero gestionado como "e
 
 **Pivote a nativo (en curso):** Claude Code ya trae de serie el núcleo de orquestación (subagents
 con `isolation: worktree`, hooks como gate, agent teams). El kit conserva sólo su diferencial real
-—el arquitecto que infiere la partición y la capa de producto— y, con `/emitir-nativo`, genera la
+—el arquitecto que infiere la partición y la capa de producto— y, con `/generate-config`, genera la
 maquinaria de orquestación como config nativa desde el mismo `particion.json`. Detalle y razones en
 `docs/COMPARATIVA_AGENT_TEAMS.md` y `docs/ARQUITECTURA_pivote_nativo.md`.

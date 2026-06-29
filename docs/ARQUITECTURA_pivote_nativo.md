@@ -1,7 +1,7 @@
 # Arquitectura del pivote a nativo — del motor propio a config generada
 
 > Complementa `COMPARATIVA_AGENT_TEAMS.md` (el *por qué*) con el *cómo*. Lo materializa
-> `/emitir-nativo`. Fecha: 2026-06-28.
+> `/generate-config`. Fecha: 2026-06-28.
 >
 > **⚠️ Actualización (2026-06-29).** Donde este doc dice que el camino a agent teams (mailbox real
 > entre teammates) «espera a que madure» (tabla §"Mapeo", fila *Bandejas + encaminamiento*; y
@@ -20,8 +20,8 @@ generando la maquinaria de orquestación como **configuración nativa** a partir
 `particion.json` que ya producimos.
 
 Clave del diseño: `particion.json` no cambia. Sigue siendo la fuente de verdad, editable a mano,
-versionada. Lo que cambia es su *consumidor*: antes `/desplegar-equipo` materializaba protocolo +
-bandejas + worktrees a mano; ahora `/emitir-nativo` lo traduce a subagent-definitions + hooks.
+versionada. Lo que cambia es su *consumidor*: antes `/deploy-team` materializaba protocolo +
+bandejas + worktrees a mano; ahora `/generate-config` lo traduce a subagent-definitions + hooks.
 
 ## Mapeo contrato → nativo
 
@@ -48,14 +48,14 @@ echaba en falta en agent teams ("no impone ownership; queda en el prompt").
 
 **Se mantiene (no existe nativo):**
 - `particion.json` + schema.
-- Arquitecto: `/inferir-organizacion`, `/reinferir`.
-- Capa de producto: `/productor`, `/aceptar`, backlog en `.claude/producto/`.
+- Arquitecto: `/design-board`, `/sync-board`.
+- Capa de producto: `/product-owner`, `/accept`, backlog en `.claude/producto/`.
 
 **Se jubila al adoptar nativo (lo da la task list + mailbox):**
 - Bandejas `.claude/inbox/`, `_peticiones.md` + encaminamiento.
-- `/coordinar`, `/coordinar-bucle`, `/inbox`.
+- `/pull-tasks`, `/pull-loop`, `/inbox`.
 
-`/emitir-nativo` **no borra** lo jubilado: lo marca legacy. La retirada se hace cuando agent teams
+`/generate-config` **no borra** lo jubilado: lo marca legacy. La retirada se hace cuando agent teams
 deje de ser experimental, no antes (hoy el motor de subagents estables sigue siendo el camino sin
 flag).
 
@@ -66,5 +66,5 @@ flag).
   (mailbox real entre teammates) espera a que madure.
 - `--agent <name>` no respeta `isolation: worktree` en algunas versiones (bug conocido): el
   aislamiento fiable es vía la herramienta Agent (subagent spawneado), no como agente principal.
-- La sintaxis de hooks/frontmatter puede cambiar: `/emitir-nativo` verifica la doc vigente antes de
+- La sintaxis de hooks/frontmatter puede cambiar: `/generate-config` verifica la doc vigente antes de
   emitir.

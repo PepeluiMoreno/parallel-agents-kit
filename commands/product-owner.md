@@ -33,7 +33,7 @@ autorización en la ficha:
 4. **Reglas de negocio.** Validaciones, permisos, casos límite, estados. Confírmalas.
 5. **Criterios de aceptación.** Redacta una lista verificable de "esto está hecho cuando…". Cada
    criterio debe ser **evaluable programáticamente** siempre que se pueda (un test, una consulta, un
-   estado observable), no una impresión subjetiva. Son los que `/aceptar` contrastará uno a uno.
+   estado observable), no una impresión subjetiva. Son los que `/accept` contrastará uno a uno.
 6. **Descomposición.** Parte la funcionalidad en tareas **por unidad** (usando el ownership §2).
    **Aplica el test SPEC a cada tarea ANTES de encolarla** —si no lo pasa, reescríbela o pártela; no
    encoles tareas mal definidas (es la causa nº1 de agentes que acaban a tiempos dispares y de merges
@@ -55,7 +55,7 @@ rica** (formato en `.claude/inbox/_README.md`), incluyendo:
   malla (`docs/ADR-topologia-estrella-no-teams.md`)—: defínela como **dependencia de backlog** con la
   línea `**Depende de:** <id-tarea>[, <id-tarea>…]` (o `**Depende de:** —` si es independiente). El
   contrato entre unidades lo fija el arquitecto; aquí solo declaras el orden. Una tarea con
-  dependencias se encola igual en `[ABIERTO]`, pero `/coordinar` no la asignará hasta que sus
+  dependencias se encola igual en `[ABIERTO]`, pero `/pull-tasks` no la asignará hasta que sus
   dependencias estén `[HECHO]` (auto-desbloqueo radial, lo arbitra el integrador).
 - la línea de trazabilidad `**Producto:** <id-ficha>` para enlazar con la ficha.
 
@@ -65,14 +65,14 @@ entre unidades está mal trazado: vuelve a la descomposición, no lo resuelvas c
 circular (que dejaría ambas tareas bloqueadas para siempre).
 
 Cambia la ficha a estado `ENCOLADA` y anota los ids de las tareas creadas. Avisa al usuario de que
-ya puede lanzar el desarrollo (`/coordinar`).
+ya puede lanzar el desarrollo (`/pull-tasks`).
 
 ## Seguimiento
 Cuando el usuario lo pida (o al volver), revisa el progreso: tareas `[HECHO]` en las bandejas con
 puntero a tus fichas → mueve la ficha a `EN DESARROLLO`/`HECHA`. Para la aceptación de producto,
-ver `/aceptar`.
+ver `/accept`.
 
-> El **buzón** (`/peticion`) sigue existiendo para bugs y quejas tácticas sueltas. Tú, el PO, eres
+> El **buzón** (`/add-request`) sigue existiendo para bugs y quejas tácticas sueltas. Tú, el PO, eres
 > para **funcionalidad nueva de producto**: proactivo y estratégico. Sois complementarios.
 
 $ARGUMENTS

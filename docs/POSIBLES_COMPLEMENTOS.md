@@ -63,7 +63,7 @@ El corazón que hoy le falta al Kanban continuo del kit. Dos niveles:
   lo que en Kanban expone los cuellos de botella.
 
 **Implementación esbozada:** campo `wip` en `particion.schema.json` + sección de política en el
-PROTOCOLO + enforcement ligero en `/coordinar` (no spawnear más de N subagents; no asignar segunda
+PROTOCOLO + enforcement ligero en `/pull-tasks` (no spawnear más de N subagents; no asignar segunda
 tarea a una unidad que ya tiene una en curso).
 
 **Estado:** esbozado, candidato a próxima rama. Habilita el hook de presupuesto del §1.
@@ -85,35 +85,35 @@ nueva. Refinamiento de Kanban maduro, no esencial para operar.
 Hook `SubagentStop`/`TaskCompleted` que rechaza el cierre de una tarea (`exit 2`) si el diff de la
 rama de la unidad tocó una zona caliente sin pasar por integrador o introdujo una migración. Es la
 red de seguridad del **lado de salida**, complementaria al test SPEC del lado de entrada
-(`/productor`). Es uno de los dos mecanismos de agent teams que adoptamos porque **refuerzan la
+(`/product-owner`). Es uno de los dos mecanismos de agent teams que adoptamos porque **refuerzan la
 estrella sin introducir malla** (la validación al cierre es el punto de control radial que la malla
 no tiene — ver `ADR-topologia-estrella-no-teams.md`).
 
 **Estado:** ✅ `templates/hooks/check-cierre.sh` escrito (mismo patrón fail-open que
 `check-ownership.sh`, ejercitado en sus rutas de fallo y de éxito) y cableado por
-`commands/emitir-nativo.md` (paso 3).
+`commands/generate-config.md` (paso 3).
 
 ---
 
 ## 4.bis. Dependencias entre tareas con auto-desbloqueo  ✅ IMPLEMENTADO (2026-06-29)
 
 El otro mecanismo de agent teams adoptado sin malla. Una tarea de backlog puede declarar
-`**Depende de:** <ids>`; `/coordinar` no la asigna hasta que esas tareas estén `[HECHO]`. La
+`**Depende de:** <ids>`; `/pull-tasks` no la asigna hasta que esas tareas estén `[HECHO]`. La
 dependencia entre unidades **no se negocia entre pares** (eso sería malla): el arquitecto fija el
 contrato, el PO declara el orden al encolar, y el integrador arbitra el desbloqueo leyendo el estado
 del backlog. Radial de principio a fin.
 
-**Estado:** ✅ formato en `templates/inbox/_README.md.tmpl`; encolado en `commands/productor.md`;
-enforcement (incl. detección de ciclos) en `commands/coordinar.md` paso 3.
+**Estado:** ✅ formato en `templates/inbox/_README.md.tmpl`; encolado en `commands/product-owner.md`;
+enforcement (incl. detección de ciclos) en `commands/pull-tasks.md` paso 3.
 
 ---
 
 ## 5. Retirada del motor legacy
 
-Cuando agent teams deje de ser experimental: jubilar `/coordinar`, `/coordinar-bucle`, `/inbox`, las
+Cuando agent teams deje de ser experimental: jubilar `/pull-tasks`, `/pull-loop`, `/inbox`, las
 bandejas `.claude/inbox/` y `_peticiones.md` — su función la dan la task list + el mailbox nativos.
-Se conserva el diferencial: `particion.json`, el arquitecto (`/inferir-organizacion`, `/reinferir`)
-y la capa de producto. El pivote (`/emitir-nativo`) ya deja esto preparado; sería la retirada final.
+Se conserva el diferencial: `particion.json`, el arquitecto (`/design-board`, `/sync-board`)
+y la capa de producto. El pivote (`/generate-config`) ya deja esto preparado; sería la retirada final.
 
 **Estado:** pendiente de que agent teams madure.
 
@@ -147,4 +147,4 @@ worktree` + hooks (estables, sin flag) son el camino.
   Descartado al elegir **Kanban continuo**: Scrum es también un patrón en estrella (centro = backlog,
   no un canal entre agentes), así que no aportaba topología nueva, solo cajas temporales que encajan
   mal con el flujo continuo de un equipo de agentes. El "release" es cruzar criterios de aceptación
-  en `/aceptar`, no el fin de una iteración.
+  en `/accept`, no el fin de una iteración.
