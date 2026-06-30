@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consola de turno · equipo virtual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pizarra:#0e1620; --panel:#141f2c; --panel-2:#19273750; --linea:#243648;
+    --tinta:#cdd9e8; --tenue:#6f8398; --tenue-2:#4a5b6e;
+    --teal:#43c8d4; --ambar:#e2a14d; --verde:#5cb98a;
+    --opus:#b59cff; --sonnet:#43c8d4; --haiku:#7f93a8;
+    --sans:'Space Grotesk',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--pizarra);color:var(--tinta);font-family:var(--mono);font-size:13px;line-height:1.5;
+    background-image:linear-gradient(var(--linea) 1px,transparent 1px),linear-gradient(90deg,var(--linea) 1px,transparent 1px);
+    background-size:46px 46px;background-position:-1px -1px;background-blend-mode:soft-light}
+  body::before{content:"";position:fixed;inset:0;background:radial-gradient(120% 80% at 70% -10%,#1a2b3d55 0,transparent 60%);pointer-events:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px 20px 60px}
+  .top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:1px solid var(--linea);padding-bottom:16px}
+  .brand .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);margin:0 0 6px}
+  .brand h1{font-family:var(--sans);font-weight:700;font-size:26px;letter-spacing:-.01em;margin:0;color:#fff}
+  .brand h1 .repo{color:var(--tenue);font-weight:400}
+  .meta{display:flex;gap:26px;text-align:right}
+  .meta .k{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--tenue);margin-bottom:4px}
+  .meta .v{font-family:var(--sans);font-size:20px;font-weight:500;color:#fff}
+  .wipdots{display:inline-flex;gap:4px;vertical-align:middle;margin-left:2px}
+  .wipdots i{width:9px;height:9px;border-radius:2px;border:1px solid var(--teal)}
+  .wipdots i.on{background:var(--teal);box-shadow:0 0 8px -1px var(--teal)}
+  .grid{display:grid;grid-template-columns:1fr 268px;gap:18px;margin-top:22px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .colhead{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--tenue);margin:0 0 12px}
+  .colhead .n{font-family:var(--sans);color:var(--tinta);font-size:13px}
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:560px){.board{grid-template-columns:1fr}}
+  .lane{background:var(--panel-2);border:1px solid var(--linea);border-radius:8px;padding:11px 10px;min-height:230px}
+  .lane h3{font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:.05em;color:var(--tenue);margin:0 0 11px;display:flex;justify-content:space-between}
+  .lane h3 b{color:var(--tinta);font-weight:700}
+  .card{background:var(--panel);border:1px solid var(--linea);border-left:2px solid var(--pip,var(--tenue-2));border-radius:5px;padding:9px 10px;margin-bottom:8px;transition:border-color .2s,transform .2s}
+  .card:hover{transform:translateX(2px);border-color:var(--tenue)}
+  .card .t{color:var(--tinta);font-size:12.5px;line-height:1.35;margin-bottom:7px}
+  .card .r{display:flex;align-items:center;justify-content:space-between;font-size:10.5px;color:var(--tenue)}
+  .owner{display:inline-flex;align-items:center;gap:5px}
+  .owner::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--pip,var(--tenue))}
+  .model{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:3px;border:1px solid var(--pip,var(--tenue-2));color:var(--pip,var(--tenue))}
+  .card.live{border-left-color:var(--teal)}
+  .live .t::after{content:"";display:inline-block;width:6px;height:6px;margin-left:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 7px var(--teal);vertical-align:middle;animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+  .units{display:flex;flex-direction:column;gap:7px}
+  .unit{display:grid;grid-template-columns:10px 1fr auto;gap:9px;align-items:center;background:var(--panel);border:1px solid var(--linea);border-radius:6px;padding:8px 10px}
+  .led{width:9px;height:9px;border-radius:50%;background:var(--tenue-2)}
+  .unit.work .led{background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.4s ease-in-out infinite}
+  .unit.block .led{background:var(--ambar);box-shadow:0 0 8px var(--ambar)}
+  .unit.queue .led{background:transparent;border:1px solid var(--tenue)}
+  .unit .nm{font-weight:500;color:var(--tinta);font-size:12.5px}
+  .unit .st{font-size:10px;color:var(--tenue);margin-top:1px}
+  .unit .wip{font-size:10px;color:var(--tenue-2);text-align:right;white-space:nowrap}
+  .unit .wip b{color:var(--teal)}
+  .hub{margin-top:12px;background:linear-gradient(180deg,#16263a,#13202e);border:1px solid #2c4257;border-radius:8px;padding:12px}
+  .hub .hh{display:flex;align-items:center;gap:7px;font-family:var(--sans);font-weight:500;color:#fff;font-size:13px;margin-bottom:9px}
+  .hub .hh .star{color:var(--teal)}
+  .hub .row{display:flex;justify-content:space-between;gap:10px;font-size:11px;padding:4px 0;border-bottom:1px dashed var(--linea)}
+  .hub .row:last-child{border:0}.hub .row span:last-child{color:var(--tinta);text-align:right}
+  .tag{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:3px;border:1px solid var(--ambar);color:var(--ambar)}
+  .tag.ok{border-color:var(--verde);color:var(--verde)}
+  .strip{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-top:20px}
+  @media(max-width:860px){.strip{grid-template-columns:1fr}}
+  .panel{background:var(--panel-2);border:1px solid var(--linea);border-radius:8px;padding:14px 15px}
+  .cost{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+  .bar{display:grid;grid-template-columns:74px 1fr 56px;gap:10px;align-items:center;font-size:11px}
+  .bar .nm{color:var(--tenue);text-transform:uppercase;letter-spacing:.06em;font-size:10px}
+  .track{height:8px;background:#0c141d;border-radius:5px;overflow:hidden}
+  .fill{height:100%;border-radius:5px}.bar .amt{text-align:right;color:var(--tinta)}
+  .flow{display:flex;flex-direction:column;gap:13px;margin-top:4px}
+  .stat{display:flex;align-items:baseline;justify-content:space-between}
+  .stat .lab{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--tenue)}
+  .stat .big{font-family:var(--sans);font-size:24px;font-weight:500;color:#fff}
+  .bottleneck{background:#1d1a14;border:1px solid #4a3c22;border-radius:6px;padding:9px 11px;font-size:11px;color:var(--ambar);display:flex;gap:8px;align-items:center}
+  .empty{color:var(--tenue-2);font-size:11px;font-style:italic;padding:6px 2px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px;padding-top:16px;border-top:1px solid var(--linea);font-size:10.5px;color:var(--tenue)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}.legend i{width:9px;height:9px;border-radius:50%}
+  .note{margin-top:18px;font-size:11px;color:var(--tenue-2);text-align:center;letter-spacing:.04em}
+  .note b{color:var(--ambar)}.note.err{color:var(--ambar)}
+  #stamp{font-size:10px;color:var(--tenue-2)}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <p class="eyebrow">kanban continuo · turno en curso</p>
+      <h1 id="project">—<span class="repo"> / equipo virtual</span></h1>
+    </div>
+    <div class="meta">
+      <div><div class="k">WIP global</div><div class="v" id="wip">—<span class="wipdots" id="wipdots"></span></div></div>
+      <div><div class="k">Hecho hoy</div><div class="v" id="donehead">—</div></div>
+      <div><div class="k">Actualizado</div><div class="v" id="stamp" style="font-size:13px">—</div></div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section>
+      <p class="colhead">tablero · <span class="n">flujo de tareas</span></p>
+      <div class="board">
+        <div class="lane"><h3>Abierto <b id="c-open">0</b></h3><div id="lane-open"></div></div>
+        <div class="lane"><h3>En curso <b id="c-prog">0</b></h3><div id="lane-prog"></div></div>
+        <div class="lane"><h3>Hecho hoy <b id="c-done">0</b></h3><div id="lane-done"></div></div>
+      </div>
+    </section>
+    <aside>
+      <p class="colhead">unidades · <span class="n" id="unitcount">—</span></p>
+      <div class="units" id="units"></div>
+      <div class="hub">
+        <div class="hh"><span class="star">◆</span> integrador</div>
+        <div id="hub-rows"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="strip">
+    <div class="panel">
+      <p class="colhead">consumo · <span class="n">€ por modelo, hoy</span></p>
+      <div class="cost" id="cost"></div>
+    </div>
+    <div class="panel">
+      <p class="colhead">flujo · <span class="n">salud del tablero</span></p>
+      <div class="flow" id="flow"></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--teal)"></i> activa</span>
+    <span><i style="background:var(--ambar)"></i> espera</span>
+    <span><i style="background:var(--tenue-2)"></i> inactiva</span>
+    <span><i style="background:var(--opus)"></i> opus</span>
+    <span><i style="background:var(--sonnet)"></i> sonnet</span>
+    <span><i style="background:var(--haiku)"></i> haiku</span>
+  </div>
+  <p class="note" id="note">Leyendo estado…</p>
+</div>
+
+<script>
+const MODEL_C = {opus:"var(--opus)", sonnet:"var(--sonnet)", haiku:"var(--haiku)"};
+const esc = s => String(s??"").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const mc = m => MODEL_C[m] || "var(--tenue-2)";
+
+function card(t){
+  const live = t.state === "EN CURSO";
+  return `<div class="card ${live?'live':''}" style="--pip:${mc(t.model)}">
+    <div class="t">${esc(t.subject)}</div>
+    <div class="r"><span class="owner" style="--pip:${mc(t.model)}">${esc(t.unit)}</span>
+    <span class="model" style="--pip:${mc(t.model)}">${esc(t.model)}</span></div></div>`;
+}
+
+function render(s){
+  document.getElementById("project").innerHTML = esc(s.project) + '<span class="repo"> / equipo virtual</span>';
+  // wip
+  const g = s.wip||{}; document.getElementById("wip").firstChild &&
+    (document.getElementById("wip").childNodes[0].nodeValue = `${g.global_used??0}/${g.global_limit??0} `);
+  const dots = Array.from({length:g.global_limit||0},(_,i)=>`<i class="${i<(g.global_used||0)?'on':''}"></i>`).join("");
+  document.getElementById("wipdots").innerHTML = dots;
+  document.getElementById("donehead").textContent = (s.columns?.hecho_hoy ?? 0);
+  document.getElementById("stamp").textContent = (s.generated_at||"").replace("T"," ").slice(5,16);
+
+  // tablero
+  const cols = s.columns||{};
+  document.getElementById("c-open").textContent = cols.abierto??0;
+  document.getElementById("c-prog").textContent = cols.en_curso??0;
+  document.getElementById("c-done").textContent = cols.hecho_hoy??0;
+  const open = (s.tasks||[]).filter(t=>t.state==="ABIERTO");
+  const prog = (s.tasks||[]).filter(t=>t.state==="EN CURSO");
+  document.getElementById("lane-open").innerHTML = open.length?open.map(card).join(""):'<div class="empty">cola vacía</div>';
+  document.getElementById("lane-prog").innerHTML = prog.length?prog.map(card).join(""):'<div class="empty">nadie trabajando</div>';
+  document.getElementById("lane-done").innerHTML = (cols.hecho_hoy??0)>0?
+    `<div class="empty">${cols.hecho_hoy} entregada(s) hoy</div>`:'<div class="empty">aún sin entregas hoy</div>';
+
+  // unidades
+  const units = s.units||[];
+  document.getElementById("unitcount").textContent = `${units.length} + integrador`;
+  const stTxt = u => u.state==="work" ? esc(u.current||"trabajando")
+    : u.state==="queue" ? "en cola · sin hueco"
+    : u.state==="block" ? "bloqueada" : "inactiva";
+  document.getElementById("units").innerHTML = units.map(u=>`
+    <div class="unit ${u.state}"><span class="led"></span>
+      <div><div class="nm">${esc(u.name)}</div><div class="st">${stTxt(u)}</div></div>
+      <div class="wip">wip <b>${u.wip_used??0}</b>/${u.wip_limit??1}</div></div>`).join("")
+    || '<div class="empty">sin unidades en la partición</div>';
+
+  // hub integrador
+  const it = s.integrator||{};
+  const rows = [];
+  rows.push(`<div class="row"><span>en cola de merge</span><span>${it.merge_queue?.length? esc(it.merge_queue.length+" petición(es)") : "vacía"}</span></div>`);
+  rows.push(`<div class="row"><span>migración pendiente</span><span>${it.migration_pending?'<span class="tag">sí</span>':'<span class="tag ok">no</span>'}</span></div>`);
+  if(it.merge_queue?.length) rows.push(`<div class="row"><span>próxima</span><span>${esc(it.merge_queue[0])}</span></div>`);
+  document.getElementById("hub-rows").innerHTML = rows.join("");
+
+  // consumo por modelo
+  const cost = s.cost_by_model||[];
+  document.getElementById("cost").innerHTML = cost.length? cost.map(c=>`
+    <div class="bar"><span class="nm">${esc(c.model)}</span>
+      <div class="track"><div class="fill" style="width:${c.pct}%;background:${mc(c.model)}"></div></div>
+      <span class="amt">$${c.usd.toFixed(2)}</span></div>`).join("")
+    : '<div class="empty">sin datos de ccusage — instálalo o configura OTel para ver el gasto</div>';
+
+  // flujo
+  const fl = s.flow||{};
+  document.getElementById("flow").innerHTML = `
+    <div class="stat"><span class="lab">entregas hoy</span><span class="big">${fl.done_today??0}</span></div>
+    ${fl.bottleneck?`<div class="bottleneck">▲ cuello de botella: <b style="color:#fff;margin:0 3px">${esc(fl.bottleneck)}</b></div>`
+      :'<div class="empty">sin cuello de botella detectado</div>'}`;
+
+  document.getElementById("note").className="note";
+  document.getElementById("note").innerHTML = 'Estado real del repo · se regenera con <code>/dashboard</code> o al cerrar ronda';
+}
+
+async function tick(){
+  try{
+    const r = await fetch("./state.json?ts="+Date.now(), {cache:"no-store"});
+    if(!r.ok) throw new Error(r.status);
+    render(await r.json());
+  }catch(e){
+    const n=document.getElementById("note"); n.className="note err";
+    n.innerHTML='No encuentro <code>state.json</code>. Corre <b>/dashboard</b> (o <code>python3 scripts/build_dashboard_state.py</code>) para generarlo.';
+  }
+}
+tick(); setInterval(tick, 10000);
+</script>
+</body>
+</html>
