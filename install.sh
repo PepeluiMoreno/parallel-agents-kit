@@ -45,10 +45,10 @@ cp -r "$KIT_DIR/templates" "$DEST/.claude/kit/"
 cp -r "$KIT_DIR/scripts"   "$DEST/.claude/kit/"
 echo "✓ schema + plantillas + scripts copiados a .claude/kit/"
 
-# 3. Dashboard web (consola de turno, opcional) → .claude/dashboard/
+# 3. Dashboard web (consola + ajustes, opcional) → .claude/dashboard/
 mkdir -p "$DEST/.claude/dashboard"
-cp "$KIT_DIR/dashboard/index.html" "$DEST/.claude/dashboard/"
-echo "✓ dashboard copiado a .claude/dashboard/ (sírvelo con /dashboard)"
+cp "$KIT_DIR"/dashboard/index.html "$KIT_DIR"/dashboard/settings.html "$KIT_DIR"/dashboard/params.manifest.json "$DEST/.claude/dashboard/"
+echo "✓ dashboard + ajustes copiados a .claude/dashboard/ (sírvelo con /dashboard, configúralo con /config)"
 
 cat <<EOF
 
