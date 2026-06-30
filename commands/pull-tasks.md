@@ -116,6 +116,9 @@ ventana por cada worktree.
    vuelve al paso 2 y lanza otra ronda para las unidades recién encargadas).
 7. **Integra (tú, como siempre):** `/apply-integration` — mergea ramas, aplica cableados de integrador.md,
    reconcilia, redacta y aplica la migración una sola vez, valida el stack.
+8. **Refresca el tablero:** ejecuta `python3 .claude/kit/scripts/build_dashboard_state.py` para
+   actualizar `.claude/dashboard/state.json` (si usas el dashboard web; ver `/dashboard`). Es
+   determinista y barato; deja la consola al día sin que tengas que pedirlo.
 
 ## Por qué es seguro
 Cada subagente queda confinado a su worktree y a su ownership → no se pisan. Solo tú tocas zonas

@@ -39,10 +39,16 @@ mkdir -p "$DEST/.claude/commands" "$DEST/.claude/kit"
 cp "$KIT_DIR"/commands/*.md "$DEST/.claude/commands/"
 echo "✓ comandos copiados a .claude/commands/"
 
-# 2. El kit en sí (schema + plantillas) → referencia para analizar/desplegar
+# 2. El kit en sí (schema + plantillas + scripts) → referencia para analizar/desplegar
 cp -r "$KIT_DIR/schema"    "$DEST/.claude/kit/"
 cp -r "$KIT_DIR/templates" "$DEST/.claude/kit/"
-echo "✓ schema + plantillas copiados a .claude/kit/"
+cp -r "$KIT_DIR/scripts"   "$DEST/.claude/kit/"
+echo "✓ schema + plantillas + scripts copiados a .claude/kit/"
+
+# 3. Dashboard web (consola de turno, opcional) → .claude/dashboard/
+mkdir -p "$DEST/.claude/dashboard"
+cp "$KIT_DIR/dashboard/index.html" "$DEST/.claude/dashboard/"
+echo "✓ dashboard copiado a .claude/dashboard/ (sírvelo con /dashboard)"
 
 cat <<EOF
 
