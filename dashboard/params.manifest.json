@@ -1,0 +1,76 @@
+{
+  "$comment": "Registro de parámetros editables del kit. La página de ajustes (settings.html) lo renderiza como formulario; /config valida y persiste cada valor en su 'scope'. Añadir un parámetro nuevo = añadir una entrada aquí; no hay que tocar la página.",
+  "version": 1,
+  "groups": [
+    {
+      "id": "flujo",
+      "label": "Flujo de trabajo (Kanban)",
+      "scope": "project",
+      "dest": ".claude/kit/particion.json",
+      "params": [
+        {
+          "key": "runtime.wip.global",
+          "label": "WIP global",
+          "help": "Agentes/subagentes en paralelo por ronda. Dial coste↔riesgo: más agentes queman cuota más rápido (lineal; en plan mode ×7) y alargan la cola de integración.",
+          "type": "int", "min": 1, "max": 12, "default": 4
+        },
+        {
+          "key": "runtime.wip.por_unidad",
+          "label": "WIP por unidad",
+          "help": "Tareas EN CURSO por unidad a la vez. 1 = terminar antes de empezar (expone cuellos de botella).",
+          "type": "int", "min": 1, "max": 4, "default": 1
+        },
+        {
+          "key": "runtime.loop",
+          "label": "Bucle de drenado",
+          "help": "off: una ronda y para. freno: drena bandejas pero para antes de mergear/migrar. pleno: desatendido (cuidado con la cuota).",
+          "type": "enum", "options": ["off", "freno", "pleno"], "default": "off"
+        },
+        {
+          "key": "runtime.modo",
+          "label": "Modo de orquestación",
+          "help": "1-ventana: un chat lanza subagentes (/pull-tasks). n-ventanas: un chat por unidad (/inbox). ambos: disponibles los dos.",
+          "type": "enum", "options": ["1-ventana", "n-ventanas", "ambos"], "default": "ambos"
+        },
+        {
+          "key": "runtime.triaje_desde_subagentes",
+          "label": "Triaje desde subagentes",
+          "help": "Si un subagente detecta trabajo de otra unidad, lo deja en su bandeja en vez de invadirla.",
+          "type": "bool", "default": false
+        }
+      ]
+    },
+    {
+      "id": "modelos",
+      "label": "Modelos (control de cuota)",
+      "scope": "project",
+      "dest": ".claude/kit/particion.json",
+      "params": [
+        {
+          "key": "runtime.model_por_defecto",
+          "label": "Modelo por defecto",
+          "help": "Con qué modelo se lanzan las unidades salvo override. opus solo para arquitecto/integrador; sonnet para implementar; haiku para lo mecánico.",
+          "type": "enum", "options": ["opus", "sonnet", "haiku"], "default": "sonnet"
+        }
+      ]
+    },
+    {
+      "id": "cuenta",
+      "label": "Tu cuenta de Claude",
+      "scope": "user",
+      "dest": "~/.claude/kit-config.json",
+      "help": "Ámbito usuario, no del proyecto: es el mismo en todos tus repos, por eso NO se versiona en particion.json. El dashboard lo usa para dibujar los relojes de cuota a la escala correcta.",
+      "params": [
+        {
+          "key": "plan",
+          "label": "Plan / suscripción",
+          "help": "Determina la holgura de cuota (Max 20x ≠ Max 5x ≠ Pro). Anthropic publica multiplicadores, no cuotas exactas: el saldo real se ve en Settings > Usage; el dashboard lo enlaza.",
+          "type": "enum",
+          "options": ["pro", "max5x", "max20x", "api"],
+          "labels": {"pro": "Pro (1x)", "max5x": "Max 5x", "max20x": "Max 20x", "api": "API (pago por token)"},
+          "default": "max20x"
+        }
+      ]
+    }
+  ]
+}

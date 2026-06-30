@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajustes · equipo virtual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--pizarra:#0e1620;--panel:#141f2c;--panel-2:#19273750;--linea:#243648;--tinta:#cdd9e8;
+    --tenue:#6f8398;--tenue-2:#4a5b6e;--teal:#43c8d4;--ambar:#e2a14d;--verde:#5cb98a;
+    --sans:'Space Grotesk',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--pizarra);color:var(--tinta);font-family:var(--mono);font-size:13px;line-height:1.5;
+    background-image:linear-gradient(var(--linea) 1px,transparent 1px),linear-gradient(90deg,var(--linea) 1px,transparent 1px);
+    background-size:46px 46px;background-position:-1px -1px;background-blend-mode:soft-light}
+  .wrap{max-width:760px;margin:0 auto;padding:22px 20px 60px}
+  .top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:1px solid var(--linea);padding-bottom:16px}
+  .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);margin:0 0 6px}
+  h1{font-family:var(--sans);font-weight:700;font-size:25px;margin:0;color:#fff}
+  .back{font-size:11px;color:var(--tenue);text-decoration:none;border:1px solid var(--linea);border-radius:5px;padding:5px 10px}
+  .back:hover{color:var(--teal);border-color:var(--teal)}
+  .group{margin-top:24px}
+  .group h2{font-family:var(--sans);font-size:14px;font-weight:500;color:#fff;margin:0 0 3px}
+  .group .ghelp{font-size:11px;color:var(--tenue);margin:0 0 13px;max-width:62ch}
+  .scope{font-size:9px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--linea);border-radius:3px;padding:1px 6px;color:var(--tenue);margin-left:8px;vertical-align:middle}
+  .scope.user{border-color:var(--ambar);color:var(--ambar)}
+  .field{background:var(--panel);border:1px solid var(--linea);border-radius:7px;padding:13px 14px;margin-bottom:10px}
+  .field .flabel{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .field .flabel b{color:var(--tinta);font-weight:500;font-size:13px}
+  .field .val{font-family:var(--sans);color:var(--teal);font-size:15px;min-width:80px;text-align:right}
+  .field .fhelp{font-size:10.5px;color:var(--tenue);margin-top:6px;line-height:1.45;max-width:60ch}
+  input[type=range]{width:100%;margin-top:11px;accent-color:var(--teal)}
+  select{margin-top:10px;width:100%;background:#0c141d;color:var(--tinta);border:1px solid var(--linea);border-radius:5px;padding:7px 9px;font-family:var(--mono);font-size:12.5px}
+  .toggle{margin-top:10px;display:inline-flex;gap:8px;cursor:pointer;user-select:none;align-items:center}
+  .toggle input{display:none}
+  .toggle .sw{width:38px;height:20px;border-radius:11px;background:#0c141d;border:1px solid var(--linea);position:relative;transition:.2s}
+  .toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--tenue);transition:.2s}
+  .toggle input:checked+.sw{background:#16313b;border-color:var(--teal)}
+  .toggle input:checked+.sw::after{left:20px;background:var(--teal)}
+  .actions{margin-top:26px;display:flex;gap:12px;align-items:center}
+  button{font-family:var(--sans);font-weight:500;font-size:13px;background:var(--teal);color:#06222a;border:0;border-radius:6px;padding:10px 18px;cursor:pointer}
+  button:hover{filter:brightness(1.08)}
+  .out{margin-top:18px;display:none}
+  .out.show{display:block}
+  .out p{font-size:11.5px;color:var(--tenue);margin:0 0 8px}
+  .out code.cmd{color:var(--teal)}
+  pre{background:#0b1118;border:1px solid var(--linea);border-radius:7px;padding:13px;overflow:auto;font-size:11.5px;color:var(--tinta);margin:0}
+  .err{margin-top:20px;color:var(--ambar);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><p class="eyebrow">parámetros del equipo</p><h1>Ajustes</h1></div>
+    <a class="back" href="./index.html">← consola</a>
+  </div>
+
+  <form id="form"></form>
+
+  <div class="actions">
+    <button type="button" id="gen">Generar configuración</button>
+    <span style="font-size:11px;color:var(--tenue)">no escribe nada: produce el JSON para aplicar con <code style="color:var(--teal)">/config</code></span>
+  </div>
+
+  <div class="out" id="out">
+    <p>Pega esto en Claude Code y ejecuta <code class="cmd">/config</code> — escribirá cada valor en su sitio
+       (flujo y modelos → <code>particion.json</code> del proyecto; cuenta → <code>~/.claude/kit-config.json</code>).
+       Luego corre <code class="cmd">/dashboard</code> para refrescar.</p>
+    <pre id="json"></pre>
+  </div>
+  <div class="err" id="err" style="display:none"></div>
+</div>
+
+<script>
+const esc = s => String(s??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+let MANIFEST=null, CURRENT={};
+
+async function load(){
+  try{
+    MANIFEST = await (await fetch("./params.manifest.json?ts="+Date.now(),{cache:"no-store"})).json();
+  }catch(e){ document.getElementById("err").style.display="block";
+    document.getElementById("err").textContent="No encuentro params.manifest.json junto a esta página."; return; }
+  try{ CURRENT = await (await fetch("./config.json?ts="+Date.now(),{cache:"no-store"})).json(); }
+  catch(e){ CURRENT = {}; }  // sin config.json aún → usa defaults del manifiesto
+  render();
+}
+
+function field(p){
+  const cur = CURRENT[p.key];
+  const val = (cur===undefined||cur===null)?p.default:cur;
+  const id = "f_"+p.key.replace(/\W/g,"_");
+  let control="";
+  if(p.type==="int"){
+    control = `<input type="range" id="${id}" data-key="${p.key}" data-type="int"
+      min="${p.min}" max="${p.max}" value="${val}"
+      oninput="document.getElementById('v_${id}').textContent=this.value">`;
+    return `<div class="field"><div class="flabel"><b>${esc(p.label)}</b>
+      <span class="val" id="v_${id}">${esc(val)}</span></div>
+      ${control}<div class="fhelp">${esc(p.help||"")}</div></div>`;
+  }
+  if(p.type==="enum"){
+    const opts = p.options.map(o=>{
+      const lab = (p.labels&&p.labels[o])||o;
+      return `<option value="${esc(o)}" ${o===val?"selected":""}>${esc(lab)}</option>`;
+    }).join("");
+    control = `<select id="${id}" data-key="${p.key}" data-type="enum">${opts}</select>`;
+    return `<div class="field"><div class="flabel"><b>${esc(p.label)}</b></div>
+      ${control}<div class="fhelp">${esc(p.help||"")}</div></div>`;
+  }
+  if(p.type==="bool"){
+    control = `<label class="toggle"><input type="checkbox" id="${id}" data-key="${p.key}" data-type="bool" ${val?"checked":""}>
+      <span class="sw"></span><span style="font-size:11px;color:var(--tenue)">activado</span></label>`;
+    return `<div class="field"><div class="flabel"><b>${esc(p.label)}</b></div>
+      ${control}<div class="fhelp">${esc(p.help||"")}</div></div>`;
+  }
+  return "";
+}
+
+function render(){
+  const form = document.getElementById("form");
+  form.innerHTML = (MANIFEST.groups||[]).map(g=>`
+    <div class="group">
+      <h2>${esc(g.label)}<span class="scope ${g.scope==='user'?'user':''}">${g.scope==='user'?'tu cuenta':'proyecto'}</span></h2>
+      ${g.help?`<p class="ghelp">${esc(g.help)}</p>`:""}
+      ${(g.params||[]).map(field).join("")}
+    </div>`).join("");
+}
+
+document.getElementById("gen").addEventListener("click", ()=>{
+  const project={}, user={};
+  const scopeOf = key => {
+    for(const g of MANIFEST.groups) for(const p of g.params)
+      if(p.key===key) return g.scope;
+    return "project";
+  };
+  document.querySelectorAll("[data-key]").forEach(el=>{
+    const key=el.dataset.key, t=el.dataset.type;
+    let v = t==="bool"?el.checked : t==="int"?parseInt(el.value,10) : el.value;
+    (scopeOf(key)==="user"?user:project)[key]=v;
+  });
+  const payload={}; if(Object.keys(project).length) payload.project=project; if(Object.keys(user).length) payload.user=user;
+  document.getElementById("json").textContent = JSON.stringify(payload,null,2);
+  document.getElementById("out").classList.add("show");
+  document.getElementById("out").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+load();
+</script>
+</body>
+</html>
