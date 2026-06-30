@@ -43,8 +43,13 @@ INBOX = CLAUDE / "inbox"
 PARTICION = CLAUDE / "kit" / "particion.json"
 OUT = CLAUDE / "dashboard" / "state.json"
 
-STATE_RX = re.compile(r"\[(ABIERTO|EN CURSO|HECHO)\]\s*(.*)")
-RESUELTO_RX = re.compile(r"\*\*Resuelto:\*\*")
+# Una tarea real es un BLOQUE que empieza por una cabecera "## [ESTADO] <metadata>".
+# Anclar en la cabecera evita contar comentarios (<!-- ... [ABIERTO] ... -->) y pies de leyenda
+# que mencionen un estado. El asunto legible vive en la línea "**Asunto:**" del bloque, no tras el "]".
+TASK_HDR_RX = re.compile(r"^##\s*\[(ABIERTO|EN CURSO|HECHO|EN ESPERA)\]")
+ASUNTO_RX = re.compile(r"\*\*Asunto:\*\*\s*(.+)")
+ID_RX = re.compile(r"\bid:([A-Za-z0-9_-]+)")
+BLOCK_SPLIT_RX = re.compile(r"(?m)^(?=##\s*\[)")
 
 
 def load_particion() -> dict:
@@ -66,33 +71,56 @@ def unit_model(unit: dict, default_model: str) -> str:
 
 
 def parse_inbox(unit_name: str) -> list[dict]:
-    """Devuelve [{subject, state}] de la bandeja de una unidad."""
+    """Devuelve [{subject, state, id}] de la bandeja de una unidad.
+
+    Parte el fichero en bloques por cabecera "## [ESTADO]" y solo cuenta los que la tienen; el
+    asunto sale de la línea **Asunto:** (o del id: si no hay), nunca de los metadatos tras el "]".
+    Así los comentarios de cabecera y los pies de leyenda que mencionan estados no cuentan como tareas.
+    """
     f = INBOX / f"{unit_name}.md"
     if not f.exists():
         return []
     tasks: list[dict] = []
-    for line in f.read_text(encoding="utf-8").splitlines():
-        m = STATE_RX.search(line)
+    for block in BLOCK_SPLIT_RX.split(f.read_text(encoding="utf-8")):
+        m = TASK_HDR_RX.match(block)
         if not m:
             continue
-        state, rest = m.group(1), m.group(2).strip()
-        # limpia markdown de viñeta/cabecera y deja el asunto legible
-        subject = re.sub(r"^[#\-*\s]+", "", rest).strip(" :·-") or "(sin asunto)"
-        tasks.append({"subject": subject[:80], "state": state})
+        state = m.group(1)
+        header = block.splitlines()[0]
+        idm = ID_RX.search(header)
+        am = ASUNTO_RX.search(block)
+        subject = (am.group(1).strip() if am else (idm.group(1) if idm else "")).strip()
+        tasks.append({
+            "subject": (subject or "(sin asunto)")[:80],
+            "state": state,
+            "id": idm.group(1) if idm else None,
+        })
     return tasks
 
 
 def count_integrator_queue() -> dict:
+    """Cola del integrador: bloques "## [PENDIENTE]" (cableados/migración esperando integración).
+
+    Ancla en la cabecera, así el comentario de cabecera del fichero (<!-- [PENDIENTE] ... -->) y los
+    bloques [ENTREGADO]/[ENCARGO]/[EN CURSO] no cuentan. migration_pending = algún [PENDIENTE]
+    menciona migración/tabla (no se dispara por el texto de leyenda del fichero).
+    """
     f = INBOX / "integrador.md"
     if not f.exists():
         return {"merge_queue": [], "migration_pending": False, "hotzones_touched": []}
-    text = f.read_text(encoding="utf-8")
-    pend = [
-        re.sub(r"^[#\-*\s]+", "", l).strip()[:70]
-        for l in text.splitlines()
-        if "[PENDIENTE]" in l
-    ]
-    migration = bool(re.search(r"migraci|alembic|esquema|schema", text, re.I))
+    hdr_rx = re.compile(r"^##\s*\[PENDIENTE\]")
+    label_rx = re.compile(r"\*\*(?:Asunto|Funcionalidad):\*\*\s*(.+)")
+    mig_rx = re.compile(r"migraci|alembic|esquema|\btabla", re.I)
+    pend: list[str] = []
+    migration = False
+    for block in BLOCK_SPLIT_RX.split(f.read_text(encoding="utf-8")):
+        if not hdr_rx.match(block):
+            continue
+        lm = label_rx.search(block)
+        label = lm.group(1).strip() if lm else block.splitlines()[0].lstrip("# ").strip()
+        pend.append(label[:70])
+        if mig_rx.search(block):
+            migration = True
     return {
         "merge_queue": pend[:8],
         "migration_pending": migration,
@@ -101,14 +129,14 @@ def count_integrator_queue() -> dict:
 
 
 def done_today_count() -> int:
-    """Cuenta [HECHO] cuya línea o vecindad menciona la fecha de hoy; si no hay fechas, 0."""
+    """Cuenta cabeceras "## [HECHO]" cuya línea menciona la fecha de hoy; si no hay fechas, 0."""
     today = date.today().isoformat()
     n = 0
     for f in INBOX.glob("*.md"):
         if f.name.startswith("_"):
             continue
         for line in f.read_text(encoding="utf-8", errors="ignore").splitlines():
-            if "[HECHO]" in line and today in line:
+            if line.lstrip().startswith("## [HECHO]") and today in line:
                 n += 1
     return n
 
