@@ -6,7 +6,27 @@
 ## Resumen en una frase
 
 Una consola web de solo lectura que pinta el estado del equipo —tablero Kanban, unidades, WIP,
-integrador, consumo por modelo, cuello de botella— leyendo los ficheros que ya existen, sin demonio.
+integrador, **cuota** (no €) y cuello de botella— leyendo los ficheros que ya existen, con una
+**página de ajustes** para los parámetros editables (WIP, loop, modelos, plan de Claude).
+
+## Cuota en vez de coste (lo que importa con suscripción)
+
+Con Pro/Max el dinero está pagado; lo que limita es la **cuota** (ventana de 5 h + tope semanal, con
+buckets Opus/Sonnet independientes en Max). Por eso el panel "consumo €" se sustituye por uno de
+cuota: plan y su multiplicador, ritmo por modelo (proxy de la ventana, de ccusage), recordatorio de
+que los teammates en *plan mode* queman ~7×, y enlace a Settings > Usage para el saldo oficial.
+Honesto: el saldo real vive en la cuenta y se **enlaza**; el dashboard calcula **ritmo**, no saldo.
+El plan se lee de `~/.claude/kit-config.json` (ámbito usuario).
+
+## Página de parámetros (ajustes)
+
+`dashboard/params.manifest.json` declara qué es editable (WIP global/por unidad, loop, modo, triaje,
+modelo por defecto, plan) con rango, default y **ámbito**. `dashboard/settings.html` lo renderiza como
+formulario, precarga los valores vigentes (`config.json`, que exporta el generador) y emite un JSON.
+No escribe (es estática): `/config` lo persiste con `scripts/apply_config.py`, validando y mandando
+cada valor a su destino — operativos del proyecto → `particion.json`; tu cuenta (plan) →
+`~/.claude/kit-config.json`. Añadir un parámetro futuro = una entrada en el manifiesto, sin tocar la
+página ni el código.
 
 ## Decisión de arquitectura
 
