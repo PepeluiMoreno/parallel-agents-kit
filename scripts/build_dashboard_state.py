@@ -42,6 +42,12 @@ CLAUDE = ROOT / ".claude"
 INBOX = CLAUDE / "inbox"
 PARTICION = CLAUDE / "kit" / "particion.json"
 OUT = CLAUDE / "dashboard" / "state.json"
+CONFIG_OUT = CLAUDE / "dashboard" / "config.json"
+MANIFEST = CLAUDE / "dashboard" / "params.manifest.json"
+USER_CONFIG = Path.home() / ".claude" / "kit-config.json"
+
+PLAN_LABEL = {"pro": "Pro (1x)", "max5x": "Max 5x", "max20x": "Max 20x", "api": "API"}
+PLAN_MULT = {"pro": 1, "max5x": 5, "max20x": 20, "api": None}
 
 # Una tarea real es un BLOQUE que empieza por una cabecera "## [ESTADO] <metadata>".
 # Anclar en la cabecera evita contar comentarios (<!-- ... [ABIERTO] ... -->) y pies de leyenda
@@ -59,6 +65,44 @@ def load_particion() -> dict:
         return json.loads(PARTICION.read_text(encoding="utf-8"))
     except Exception:
         return {}
+
+
+def load_user_config() -> dict:
+    """Config de ámbito usuario (~/.claude/kit-config.json): plan, etc. Mismo en todos los repos."""
+    if not USER_CONFIG.exists():
+        return {}
+    try:
+        return json.loads(USER_CONFIG.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _dig(d: dict, dotted: str):
+    cur = d
+    for part in dotted.split("."):
+        if not isinstance(cur, dict) or part not in cur:
+            return None
+        cur = cur[part]
+    return cur
+
+
+def export_config(part: dict, user: dict) -> None:
+    """Vuelca los valores VIGENTES de cada parámetro del manifiesto → config.json, para que la
+    página de ajustes los precargue. Si no hay manifiesto, no hace nada."""
+    if not MANIFEST.exists():
+        return
+    try:
+        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    except Exception:
+        return
+    values: dict[str, object] = {}
+    for group in manifest.get("groups", []):
+        src = user if group.get("scope") == "user" else part
+        for p in group.get("params", []):
+            v = _dig(src, p["key"])
+            values[p["key"]] = v if v is not None else p.get("default")
+    CONFIG_OUT.parent.mkdir(parents=True, exist_ok=True)
+    CONFIG_OUT.write_text(json.dumps(values, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def unit_model(unit: dict, default_model: str) -> str:
@@ -224,6 +268,18 @@ def build() -> dict:
     elif queued_units:
         bottleneck = f"{queued_units} unidad(es) en cola sin hueco de WIP"
 
+    user = load_user_config()
+    plan = user.get("plan")
+    rate = ccusage_by_model()  # ritmo aproximado de la ventana (tokens/€ por modelo), NO saldo oficial
+    quota = {
+        "plan": plan,
+        "plan_label": PLAN_LABEL.get(plan),
+        "plan_multiplier": PLAN_MULT.get(plan),
+        "rate_by_model": rate,            # proxy de consumo de la ventana de 5h; saldo real en Settings>Usage
+        "plan_mode_multiplier": 7,        # recordatorio: teammates en plan mode queman ~7x
+        "balance_url": "https://claude.ai/settings/usage",
+    }
+
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "project": part.get("proyecto") or ROOT.name,
@@ -233,17 +289,20 @@ def build() -> dict:
         "tasks": tasks,
         "units": units,
         "integrator": integ,
-        "cost_by_model": ccusage_by_model(),
+        "quota": quota,
         "flow": {"done_today": cols["hecho_hoy"], "bottleneck": bottleneck},
     }
 
 
 def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    part = load_particion()
+    export_config(part, load_user_config())
     state = build()
     OUT.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"dashboard: estado escrito en {OUT.relative_to(ROOT)} "
-          f"({len(state['units'])} unidades, {state['wip']['global_used']}/{state['wip']['global_limit']} WIP)")
+          f"({len(state['units'])} unidades, {state['wip']['global_used']}/{state['wip']['global_limit']} WIP, "
+          f"plan={state['quota']['plan'] or 'sin configurar'})")
     return 0
 
 

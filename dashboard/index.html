@@ -86,6 +86,12 @@
   .note{margin-top:18px;font-size:11px;color:var(--tenue-2);text-align:center;letter-spacing:.04em}
   .note b{color:var(--ambar)}.note.err{color:var(--ambar)}
   #stamp{font-size:10px;color:var(--tenue-2)}
+  .qplan{font-size:13px;color:var(--tinta);margin-bottom:8px}.qplan b{color:#fff;font-family:var(--sans)}
+  .qsub{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--tenue);margin:6px 0 6px}
+  .qnote{margin-top:11px;font-size:10.5px;color:var(--tenue);line-height:1.5}
+  .qnote a{color:var(--teal);text-decoration:none}.qnote a:hover{text-decoration:underline}
+  .gear{font-family:var(--mono);font-size:11px;color:var(--tenue);text-decoration:none;border:1px solid var(--linea);border-radius:5px;padding:5px 10px}
+  .gear:hover{color:var(--teal);border-color:var(--teal)}
   @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -100,6 +106,7 @@
       <div><div class="k">WIP global</div><div class="v" id="wip">—<span class="wipdots" id="wipdots"></span></div></div>
       <div><div class="k">Hecho hoy</div><div class="v" id="donehead">—</div></div>
       <div><div class="k">Actualizado</div><div class="v" id="stamp" style="font-size:13px">—</div></div>
+      <div style="display:flex;align-items:flex-end"><a class="gear" href="./settings.html">⚙ ajustes</a></div>
     </div>
   </header>
 
@@ -124,8 +131,8 @@
 
   <div class="strip">
     <div class="panel">
-      <p class="colhead">consumo · <span class="n">€ por modelo, hoy</span></p>
-      <div class="cost" id="cost"></div>
+      <p class="colhead">cuota · <span class="n">lo que importa con suscripción</span></p>
+      <div class="cost" id="quota"></div>
     </div>
     <div class="panel">
       <p class="colhead">flujo · <span class="n">salud del tablero</span></p>
@@ -199,13 +206,27 @@ function render(s){
   if(it.merge_queue?.length) rows.push(`<div class="row"><span>próxima</span><span>${esc(it.merge_queue[0])}</span></div>`);
   document.getElementById("hub-rows").innerHTML = rows.join("");
 
-  // consumo por modelo
-  const cost = s.cost_by_model||[];
-  document.getElementById("cost").innerHTML = cost.length? cost.map(c=>`
-    <div class="bar"><span class="nm">${esc(c.model)}</span>
-      <div class="track"><div class="fill" style="width:${c.pct}%;background:${mc(c.model)}"></div></div>
-      <span class="amt">$${c.usd.toFixed(2)}</span></div>`).join("")
-    : '<div class="empty">sin datos de ccusage — instálalo o configura OTel para ver el gasto</div>';
+  // cuota (lo que importa con suscripción; el saldo oficial vive en Settings>Usage)
+  const q = s.quota||{};
+  const rate = q.rate_by_model||[];
+  let qh = "";
+  if(q.plan){
+    qh += `<div class="qplan">plan <b>${esc(q.plan_label||q.plan)}</b>${q.plan_multiplier?` · ${q.plan_multiplier}× Pro`:""}</div>`;
+  } else {
+    qh += `<div class="empty">plan sin configurar — ábrelo en <a href="./settings.html">ajustes</a> para escalar los relojes</div>`;
+  }
+  if(rate.length){
+    qh += `<div class="qsub">ritmo de la ventana (proxy)</div>` + rate.map(c=>`
+      <div class="bar"><span class="nm">${esc(c.model)}</span>
+        <div class="track"><div class="fill" style="width:${c.pct}%;background:${mc(c.model)}"></div></div>
+        <span class="amt">${c.usd!=null?'$'+c.usd.toFixed(2):''}</span></div>`).join("");
+  } else {
+    qh += `<div class="empty">sin ritmo aún — ccusage da el consumo de la ventana cuando hay actividad</div>`;
+  }
+  qh += `<div class="qnote">Saldo real (5 h y semanal, Opus y Sonnet por separado) →
+    <a href="${esc(q.balance_url||'#')}" target="_blank" rel="noopener">Settings · Usage</a>.
+    Ojo: teammates en <b>plan mode</b> queman ~${q.plan_mode_multiplier||7}× la cuota.</div>`;
+  document.getElementById("quota").innerHTML = qh;
 
   // flujo
   const fl = s.flow||{};
